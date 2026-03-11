@@ -344,7 +344,7 @@ const DISCORD_HANDLES={"MrBom":"@mrbom","Tora":"@tora5349","TotherSnail":"@dxnie
 const TEAM_ICONS={TEAM_001:"⚡",TEAM_002:"🌊",TEAM_003:"💀",TEAM_004:"👑",TEAM_005:"🤝",TEAM_006:"🛡️",TEAM_007:"🔱",TEAM_008:"🔥",TEAM_009:"⚔️",TEAM_010:"🦁",TEAM_011:"🌀",TEAM_012:"🧠",TEAM_013:"💪",TEAM_014:"🎯",TEAM_015:"☠️",TEAM_016:"🌈",TEAM_017:"🔭"};
 
 // Runtime data (populated from sheet)
-let DATA = { teams:[], players:{}, rankings:[], tournaments:[], rosterMoves:[] };
+let DATA = { teams:[], players:{}, freeAgents:[], rankings:[], tournaments:[], rosterMoves:[] };
 
 // ═══════════════════════════════════════════════════════════
 // CSV PARSER
@@ -422,15 +422,37 @@ function processTeams(rows, playerRows){
     team.players.push({name,discord,flag:COUNTRY_FLAGS[country]||"🏴"});
   });
 
-  // Mark disbanded
+  // Mark disbanded: teams with Total Points <= -100 in TEAMS_DATABASE
   Object.values(teamMap).forEach(t=>{
-    if(t.name==="Monarchy EC") t.disband=true;
+    const row=rows.find(r=>(r["Team Name"]||"").trim()===t.name);
+    if(row){
+      const pts=parseFloat(row["Total Points"]||row["Tournament Points"]||0);
+      if(pts<=-100) t.disband=true;
+    }
   });
 
   DATA.teams=Object.values(teamMap);
+
+  // Free agents — players with no team
+  const COUNTRY_FLAGS2={RU:"🇷🇺",UK:"🇬🇧",IR:"🇮🇷",US:"🇺🇸",IT:"🇮🇹",DE:"🇩🇪",FR:"🇫🇷",
+    BR:"🇧🇷",MX:"🇲🇽",CR:"🇨🇷",EC:"🇪🇨",PA:"🇵🇦",IQ:"🇮🇶",TR:"🇹🇷",CH:"🇨🇭",
+    CA:"🇨🇦",LT:"🇱🇹",CY:"🇨🇾"};
+  DATA.freeAgents=playerRows
+    .filter(p=>{
+      const name=(p["Username"]||"").trim();
+      const team=(p["Current Team"]||"").trim();
+      return name && name!=="Username" && (!team||team==="Free Agent");
+    })
+    .map(p=>({
+      name:(p["Username"]||"").trim(),
+      discord:(p["Discord (optional)"]||"").trim(),
+      country:(p["Country (optional)"]||"").trim(),
+      flag:COUNTRY_FLAGS2[(p["Country (optional)"]||"").trim()]||"🏴",
+    }));
+
   let playerCount=0; DATA.teams.forEach(t=>playerCount+=t.players.length);
   document.getElementById("home-teams").textContent=DATA.teams.length;
-  document.getElementById("home-players").textContent=playerCount||"—";
+  document.getElementById("home-players").textContent=playerCount+DATA.freeAgents.length||"—";
 }
 
 function processRoster(rows){
@@ -496,57 +518,75 @@ function processRankings(rows){
 
 function processTournaments(rows){
   const map={};
+  // Team earnings accumulator: teamName -> total prize money (numbers only)
+  DATA.teamEarnings={};
+
   rows.forEach(r=>{
-    const name=(r["Tournament Name"]||"").trim();if(!name)return;
+    // Tournament name — try both "Tournament Name" and "Tournament Name " (with space)
+    const name=((r["Tournament Name "]||r["Tournament Name"]||"")).trim();
+    if(!name)return;
+
     if(!map[name]){
       map[name]={
         name,
-        dateStart:r["Date Start"]||r["Date"]||"",
-        dateEnd:r["Date End"]||r["End Date"]||"",
+        dateStart:(r["Date Start"]||r["Date"]||"").trim(),
+        dateEnd:(r["Date End"]||"").trim(),
         region:(r["Region"]||"Global").trim(),
         prize:(r["Prize"]||"").trim(),
-        status:(r["Status"]||"").trim().toLowerCase(),
-        link:(r["Discord Link"]||r["Link"]||"https://discord.gg/mH2mT66GXK").trim(),
-        org:(r["Organizer"]||"GSN").trim(),
+        link:(r["Register Link"]||"https://discord.gg/mH2mT66GXK").trim(),
+        org:"GSN",
         results:[],
       };
     }
-    if(r["Team Name"]) map[name].results.push({
-      team:(r["Team Name"]||"").trim(),
-      place:(r["Placement"]||"").trim(),
-      pts:parseFloat(r["Points"])||0,
-      prize:(r["Team Prize"]||r["Prize Pool"]||"").trim(),
-    });
-  });
-  const today=new Date();today.setHours(0,0,0,0);
-  DATA.tournaments=Object.values(map).map(t=>{
-    // Determine status from End Date if not set explicitly
-    let st=t.status;
-    if(!st){
-      const endStr=t.dateEnd||t.dateStart;
-      if(endStr){
-        // Handle DD/MM/YYYY
-        let d;
-        const parts=endStr.split("/");
-        if(parts.length===3) d=new Date(parts[2],parts[1]-1,parts[0]);
-        else d=new Date(endStr);
-        st=(!isNaN(d)&&d<today)?"past":"upcoming";
-      } else st="upcoming";
+
+    const teamName=(r["Team Name"]||"").trim();
+    const place=(r["Placement"]||"").trim();
+    const prizePerTeam=(r["Prize Per Team"]||"").trim();
+
+    if(teamName){
+      map[name].results.push({team:teamName,place,pts:parseFloat(r["Points"])||0,prizePerTeam});
+      // Accumulate earnings — extract numeric value from prize string (e.g. "300$" -> 300)
+      if(prizePerTeam){
+        const num=parseFloat(prizePerTeam.replace(/[^0-9.]/g,""));
+        if(!isNaN(num)&&num>0){
+          DATA.teamEarnings[teamName]=(DATA.teamEarnings[teamName]||0)+num;
+        }
+      }
     }
-    // Winner = placement "1"
+  });
+
+  const today=new Date();today.setHours(0,0,0,0);
+  const fmtDate=s=>{
+    if(!s)return"";
+    // Handle MM/DD/YYYY or DD/MM/YYYY
+    const p=s.split("/");
+    if(p.length===3){
+      const d=new Date(p[2],p[0]-1,p[1]); // try MM/DD/YYYY
+      if(!isNaN(d)&&d.getFullYear()>2000) return d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+    }
+    const d2=new Date(s);
+    if(!isNaN(d2)) return d2.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+    return s;
+  };
+  const parseDate=s=>{
+    if(!s)return null;
+    const p=s.split("/");
+    if(p.length===3) return new Date(p[2],p[1]-1,p[0]); // DD/MM/YYYY
+    return new Date(s);
+  };
+
+  DATA.tournaments=Object.values(map).map(t=>{
+    const endDate=parseDate(t.dateEnd);
+    const startDate=parseDate(t.dateStart);
+    const refDate=endDate||startDate;
+    const st=refDate&&!isNaN(refDate)&&refDate<today?"past":"upcoming";
     const w=t.results.find(r=>r.place==="1"||r.place==="1st"||r.place==="1er");
-    // Format display date
-    const fmtDate=s=>{
-      if(!s)return"";
-      const p=s.split("/");
-      if(p.length===3){const d=new Date(p[2],p[1]-1,p[0]);if(!isNaN(d))return d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});}
-      return s;
-    };
     const dateDisplay=t.dateEnd&&t.dateEnd!==t.dateStart
       ?fmtDate(t.dateStart)+" – "+fmtDate(t.dateEnd)
-      :fmtDate(t.dateStart||t.dateEnd);
+      :fmtDate(t.dateStart);
     return{...t,status:st,winner:w?.team||null,dateDisplay};
   }).sort((a,b)=>(a.status==="upcoming"?0:1)-(b.status==="upcoming"?0:1));
+
   document.getElementById("home-tourns").textContent=DATA.tournaments.length;
   document.getElementById("tourn-count").textContent=DATA.tournaments.length+" Events";
 }
@@ -576,14 +616,15 @@ function renderRankings(){
   const max=Math.max(...data.map(r=>r.rating),1);
   const list=rankReg==="all"?data:data.filter(r=>r.region===rankReg);
   document.getElementById("rank-count").textContent=list.length+" Ranked";
-  // Prize map: only for tournament winners (placement = "1")
-  const pm={};DATA.tournaments.forEach(t=>{if(t.prize){const w=t.results.find(r=>r.place==="1"||r.place==="1st");if(w)pm[w.team]=t.prize;}});
+  // Earnings map: cumulative prize money per team
+  const pm=DATA.teamEarnings||{};
   document.getElementById("rankWrap").innerHTML=`<table class="rank-table">
     <thead><tr><th>#</th><th>Team</th><th>Total Pts</th><th>Recent Pts</th><th>Tournaments</th><th>Stability</th><th>Final Rating</th></tr></thead>
     <tbody>${list.map(r=>{
       const rc=r.rank===1?"g":r.rank===2?"s":r.rank===3?"b":"";
       const bar=Math.round(r.rating/max*100);
-      const pt=pm[r.name]?`<span class="prize-tag">${pm[r.name]}</span>`:"";
+      const earn=pm[r.name];
+      const pt=earn?`<span class="prize-tag">$${earn}</span>`:"";
       return`<tr><td><span class="rk-num ${rc}">${r.rank}</span></td><td><span class="rk-team">${r.name}</span><span class="reg-tag reg-${r.region}">${r.region}</span>${pt}</td><td><span style="font-weight:700">${r.pts}</span></td><td style="font-weight:600">${r.recent}</td><td>${r.tourn}</td><td>${r.stab.toFixed(1)}</td><td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${bar}%"></div></div><span class="bar-val">${r.rating.toFixed(1)}</span></div></td></tr>`;
     }).join("")}</tbody></table>`;
 }
@@ -595,19 +636,10 @@ function renderTeams(){
   const q=(document.getElementById("teamSearch")||{}).value||"";const s=q.toLowerCase();
   const ri=name=>DATA.rankings.find(r=>r.name===name)||null;
   // Prize: only teams who WON a tournament (placement = "1")
-  const pm={};
-  DATA.tournaments.forEach(t=>{
-    if(t.prize){
-      const w=t.results.find(r=>r.place==="1"||r.place==="1st");
-      if(w) pm[w.team]=t.prize;
-    }
-  });
-  // Sort: active teams first, disbanded last
-  const sorted=[...DATA.teams].sort((a,b)=>{
-    if(a.disband&&!b.disband)return 1;
-    if(!a.disband&&b.disband)return -1;
-    return 0;
-  });
+  // Cumulative earnings per team
+  const pm=DATA.teamEarnings||{};
+  // Filter out disbanded teams entirely
+  const sorted=[...DATA.teams].filter(t=>!t.disband);
   const list=sorted.filter(t=>{
     if(teamReg!=="all"&&t.region!==teamReg)return false;
     if(s&&!t.name.toLowerCase().includes(s)&&!t.players.some(p=>p.name.toLowerCase().includes(s)))return false;
@@ -615,19 +647,46 @@ function renderTeams(){
   });
   document.getElementById("teams-count").textContent=list.length+" Teams";
   const icon=id=>TEAM_ICONS[id]||"🎮";
+  // Free agents section (only show when not searching by region or query hides them)
+  const faList=DATA.freeAgents.filter(p=>{
+    if(s&&!p.name.toLowerCase().includes(s))return false;
+    if(teamReg!=="all")return false;
+    return true;
+  });
+
   document.getElementById("teamsGrid").innerHTML=list.map((t,i)=>{
     const r=ri(t.name);
     const rb=t.disband
       ?`<span style="font-size:.56rem;font-weight:700;letter-spacing:.08em;padding:.1rem .38rem;border-radius:2px;text-transform:uppercase;background:rgba(200,16,46,.2);color:var(--red3)">DISBANDED</span>`
       :r?`<span class="tc-rank">Rank #${r.rank} · ${r.rating.toFixed(1)}</span>`:`<span class="tc-unranked">Unranked</span>`;
-    const prz=pm[t.name]?`<span class="tc-prize">🏆 ${pm[t.name]}</span>`:"";
+    const earn=pm[t.name];
+    const prz=earn?`<span class="tc-prize">🏆 $${earn}</span>`:"";
     const rows=t.players.length?t.players.map(p=>{
       const disc=p.discord?`<span class="tc-disc">${p.discord}</span>`:"";
       return`<li class="tc-player"><span class="tc-flag">${p.flag||"🏴"}</span><span class="tc-ign">${p.name}</span>${disc}</li>`;
     }).join(""):`<li class="tc-noroster">Roster not available</li>`;
     const opacity=t.disband?"opacity:.55":"";
     return`<div class="team-card" style="animation-delay:${i*.03}s;${opacity}"><div class="tc-head" style="${t.disband?"filter:grayscale(.4)":""}"><div class="tc-icon">${icon(t.id)}</div><div class="tc-info"><div class="tc-name">${t.name}</div><div class="tc-meta"><span class="tc-region">${t.region}</span>${rb}${prz}</div></div></div><div class="tc-body"><div class="tc-rh">Roster · ${t.players.length} player${t.players.length!==1?"s":""}</div><ul style="list-style:none">${rows}</ul></div></div>`;
-  }).join("");
+  }).join("") + (faList.length ? `
+    <div style="grid-column:1/-1;margin-top:1.5rem;">
+      <div class="t-section-head">🎯 Free Agents · Available for recruitment</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.65rem;margin-top:.75rem;">
+        ${faList.map((p,i)=>`
+          <div class="tr-card" style="animation-delay:${i*.02}s">
+            <div class="tr-stripe-join"></div>
+            <div class="tr-body" style="padding:.7rem 1.1rem;gap:1rem;">
+              <div style="display:flex;align-items:center;gap:8px;flex:1;">
+                <span style="font-size:1rem">${p.flag}</span>
+                <div>
+                  <div class="tr-name">${p.name}</div>
+                  ${p.discord?`<div class="tr-date">${p.discord}</div>`:""}
+                </div>
+              </div>
+              <span class="tr-badge tr-badge-join">Free Agent</span>
+            </div>
+          </div>`).join("")}
+      </div>
+    </div>` : "");
 }
 function fTeam(reg,btn){teamReg=reg;document.querySelectorAll("#page-teams .ctrl-f").forEach(b=>b.classList.remove("on"));btn.classList.add("on");renderTeams();}
 
@@ -648,7 +707,7 @@ function renderTournaments(){
 function buildCard(t,i){
   const labels={past:"Completed",upcoming:"Upcoming"};
   const sub=t.winner?`<div class="t-winner">🏆 Winner: ${t.winner}</div>`:`<div class="t-org">${t.org} · ${t.region}</div>`;
-  const act=t.status==="upcoming"?`<a href="${t.link}" target="_blank" class="btn-p">Register</a>`:`<span class="btn-o">Archived</span>`;
+  const act=t.status==="upcoming"?`<a href="${t.link}" target="_blank" class="btn-p">Register</a>`:``;
   const prize=t.prize||"—";
   const dateStr=t.dateDisplay||t.dateStart||t.date||"TBD";
   return`<div class="tourn-card" style="animation-delay:${i*.08}s"><div class="t-sp ${t.status}"></div><div class="tourn-body"><div class="t-main"><div class="t-status ts-${t.status}"><div class="t-dot"></div>${labels[t.status]||t.status}</div><div class="t-name">${t.name}</div>${sub}</div><div class="t-meta"><div class="t-mb"><span class="t-mv">${dateStr}</span><span class="t-mk">Date</span></div><div class="t-mb"><span class="t-mv">${t.results.length||"—"}</span><span class="t-mk">Teams</span></div><div class="t-mb"><span class="t-mv prize">${prize}</span><span class="t-mk">Prize</span></div></div></div><div class="tourn-action">${act}</div></div>`;
