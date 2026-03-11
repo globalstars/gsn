@@ -391,10 +391,7 @@ async function fetchAll(){
 // DATA PROCESSORS
 // ═══════════════════════════════════════════════════════════
 function processTeams(rows){
-  // opensheet returns objects with exact column names
-  // Players are in columns named like "1", "2", ... or "Players 
-
-1" etc
+  // opensheet returns objects - players in numbered columns
   // We try all possible key patterns
   const teamMap={};
   rows.forEach(r=>{
