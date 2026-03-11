@@ -361,13 +361,16 @@ function parseCSV(text){
 // ═══════════════════════════════════════════════════════════
 // FETCH ALL SHEETS IN PARALLEL
 // ═══════════════════════════════════════════════════════════
+function proxied(url){
+  return "https://api.allorigins.win/raw?url="+encodeURIComponent(url);
+}
 async function fetchAll(){
   try{
     const [rTeams,rRoster,rTourns,rRankings] = await Promise.all([
-      fetch(URL_TEAMS).then(r=>r.text()),
-      fetch(URL_ROSTER).then(r=>r.text()),
-      fetch(URL_TOURNS).then(r=>r.text()),
-      fetch(URL_RANKINGS).then(r=>r.text()),
+      fetch(proxied(URL_TEAMS)).then(r=>r.text()),
+      fetch(proxied(URL_ROSTER)).then(r=>r.text()),
+      fetch(proxied(URL_TOURNS)).then(r=>r.text()),
+      fetch(proxied(URL_RANKINGS)).then(r=>r.text()),
     ]);
     processTeams(parseCSV(rTeams));
     processRoster(parseCSV(rRoster));
