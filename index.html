@@ -391,51 +391,97 @@ async function fetchAll(){
 // DATA PROCESSORS
 // ═══════════════════════════════════════════════════════════
 function processTeams(rows){
-  // Cols: Team ID, Team Name, Region, Creation Date, ... Players col8+
+  // opensheet returns objects with exact column names
+  // Players are in columns named like "1", "2", ... or "Players 
+
+1" etc
+  // We try all possible key patterns
   const teamMap={};
   rows.forEach(r=>{
-    const id=r["Team ID"];const name=r["Team Name"];const region=r["Region"];
+    const id=(r["Team ID"]||"").trim();
+    const name=(r["Team Name"]||"").trim();
+    const region=(r["Region"]||"").trim();
     if(!id||!name)return;
-    if(!teamMap[id]) teamMap[id]={id,name,region,players:[]};
-    // Players are in columns "Players  1","2","3"... up to 7
-    ["Players \n\n1","2","3","4","5","6","7"].forEach(k=>{
-      const p=r[k]||r["Players \n\n"+k]||"";
-      if(p&&p.trim()&&!teamMap[id].players.includes(p.trim())) teamMap[id].players.push(p.trim());
+    if(!teamMap[id]) teamMap[id]={id,name,region,players:[],disband:false};
+    // Try every key in the row for player columns
+    Object.keys(r).forEach(k=>{
+      const v=(r[k]||"").trim();
+      if(!v)return;
+      // Skip non-player columns
+      if(["Team ID","Team Name","Region","Creation Date","Tournament Points",
+          "Stability Points","Total Points","Roster cohesion (max 33 PTS)",
+          "Roster changes in last 3 months","No roster chages in  last 3 months (max 32 PTS)",
+          "Days w/o roster changes","Time w/o roster chages (max 20 PTS)",
+          "Total changes (max 15 PTS)","TOTAL ROSTER POINTS"].includes(k)) return;
+      // Skip numeric-ish keys that are time values (numbers > 30 likely days)
+      if(!isNaN(v)&&parseFloat(v)>10)return;
+      // Skip if looks like a number key for time columns
+      const kn=parseFloat(k);
+      if(!isNaN(kn)&&kn>7)return;
+      if(!teamMap[id].players.includes(v)) teamMap[id].players.push(v);
     });
   });
+  // Mark Monarchy EC as disbanded
+  Object.values(teamMap).forEach(t=>{
+    if(t.name==="Monarchy EC") t.disband=true;
+  });
   DATA.teams=Object.values(teamMap);
-  // Update home stats
   let playerCount=0;DATA.teams.forEach(t=>playerCount+=t.players.length);
   document.getElementById("home-teams").textContent=DATA.teams.length;
   document.getElementById("home-players").textContent=playerCount||"105";
 }
 
 function processRoster(rows){
-  // Cols: Date, Player ID, Player Name, Old Team ID, Old Team Name, New Team ID, New Team Name
-  const fmt=d=>{try{const dt=new Date(d);if(isNaN(dt))return d;return dt.toLocaleDateString("en-US",{month:"short",day:"2-digit",year:"numeric"});}catch{return d;}};
-  const type=(o,n)=>o==="Free Agent"?"join":n==="Free Agent"?"leave":"transfer";
+  const fmt=d=>{
+    if(!d)return"";
+    // Handle DD/MM/YYYY format from Google Sheets
+    const parts=d.split("/");
+    if(parts.length===3){
+      const dt=new Date(parts[2],parts[1]-1,parts[0]);
+      if(!isNaN(dt)) return dt.toLocaleDateString("en-US",{month:"short",day:"2-digit",year:"numeric"});
+    }
+    try{const dt=new Date(d);if(!isNaN(dt))return dt.toLocaleDateString("en-US",{month:"short",day:"2-digit",year:"numeric"});}catch{}
+    return d;
+  };
+  const type=(o,n)=>{
+    const oe=(o||"").trim();const ne=(n||"").trim();
+    if(!oe||oe==="Free Agent")return"join";
+    if(!ne||ne==="Free Agent")return"leave";
+    return"transfer";
+  };
   DATA.rosterMoves=rows
-    .filter(r=>r["Player Name"]&&(r["Old Team Name"]||r["New Team Name"]))
-    .map(r=>({
-      player:r["Player Name"],
-      from:r["Old Team Name"]||"Free Agent",
-      to:r["New Team Name"]||"Free Agent",
-      date:fmt(r["Date"]),
-      rawDate:r["Date"],
-      type:type(r["Old Team Name"]||"Free Agent",r["New Team Name"]||"Free Agent"),
-    }))
-    .sort((a,b)=>new Date(b.rawDate)-new Date(a.rawDate));
+    .filter(r=>{
+      const pname=r["Player Name"]||r["player name"]||r["PLAYER NAME"]||"";
+      return pname.trim()&&pname.trim()!=="Player Name";
+    })
+    .map(r=>{
+      const pname=(r["Player Name"]||r["player name"]||"").trim();
+      const oldT=(r["Old Team Name"]||r["old team name"]||"").trim();
+      const newT=(r["New Team Name"]||r["new team name"]||"").trim();
+      const date=r["Date"]||r["date"]||"";
+      return{
+        player:pname,from:oldT||"Free Agent",to:newT||"Free Agent",
+        date:fmt(date),rawDate:date,
+        type:type(oldT,newT),
+      };
+    })
+    .filter(r=>r.player)
+    .sort((a,b)=>{
+      const da=new Date(a.rawDate.split("/").reverse().join("-"));
+      const db=new Date(b.rawDate.split("/").reverse().join("-"));
+      return db-da;
+    });
 }
 
 function processRankings(rows){
-  // Cols: Rank, Team ID, Team Name, Region, Total Points, Recent Points, Tournaments, Stability Score, Final Rating, Status
   DATA.rankings=rows
-    .filter(r=>r["Team Name"]&&r["Final Rating"]&&r["Status"]==="Ranked")
+    .filter(r=>(r["Team Name"]||"").trim()&&(r["Final Rating"]||"").trim())
+    .filter(r=>(r["Status"]||"").trim()==="Ranked")
     .map((r,i)=>({
       rank:parseInt(r["Rank"])||i+1,
-      id:r["Team ID"]||"",
-      name:r["Team Name"],
-      region:r["Region"]||"—",
+      id:(r["Team ID"]||"").trim(),
+      name:(r["Team Name"]||"").trim(),
+      region:(r["Region"]||"—").trim(),
       pts:parseFloat(r["Total Points"])||0,
       recent:parseFloat(r["Recent Points"])||0,
       tourn:parseInt(r["Tournaments"])||0,
@@ -447,20 +493,57 @@ function processRankings(rows){
 }
 
 function processTournaments(rows){
-  // Cols: Team ID, Team Name, Placement, Points, Points Today, Tournament Name, Date, Region
-  // Optional: Prize (col I), Status (col J), Discord Link (col K)
   const map={};
   rows.forEach(r=>{
     const name=(r["Tournament Name"]||"").trim();if(!name)return;
-    if(!map[name]) map[name]={name,date:r["Date"]||"",region:r["Region"]||"Global",prize:r["Prize"]||"",status:r["Status"]||"",link:r["Discord Link"]||"https://discord.gg/mH2mT66GXK",org:r["Organizer"]||"GSN",results:[]};
-    map[name].results.push({team:r["Team Name"],place:r["Placement"],pts:parseFloat(r["Points"])||0});
+    if(!map[name]){
+      map[name]={
+        name,
+        dateStart:r["Date Start"]||r["Date"]||"",
+        dateEnd:r["Date End"]||r["End Date"]||"",
+        region:(r["Region"]||"Global").trim(),
+        prize:(r["Prize"]||"").trim(),
+        status:(r["Status"]||"").trim().toLowerCase(),
+        link:(r["Discord Link"]||r["Link"]||"https://discord.gg/mH2mT66GXK").trim(),
+        org:(r["Organizer"]||"GSN").trim(),
+        results:[],
+      };
+    }
+    if(r["Team Name"]) map[name].results.push({
+      team:(r["Team Name"]||"").trim(),
+      place:(r["Placement"]||"").trim(),
+      pts:parseFloat(r["Points"])||0,
+      prize:(r["Team Prize"]||r["Prize Pool"]||"").trim(),
+    });
   });
-  const today=new Date();
+  const today=new Date();today.setHours(0,0,0,0);
   DATA.tournaments=Object.values(map).map(t=>{
-    let st=(t.status||"").toLowerCase();
-    if(!st){const d=new Date(t.date);st=(!isNaN(d)&&d<today)?"past":"upcoming";}
+    // Determine status from End Date if not set explicitly
+    let st=t.status;
+    if(!st){
+      const endStr=t.dateEnd||t.dateStart;
+      if(endStr){
+        // Handle DD/MM/YYYY
+        let d;
+        const parts=endStr.split("/");
+        if(parts.length===3) d=new Date(parts[2],parts[1]-1,parts[0]);
+        else d=new Date(endStr);
+        st=(!isNaN(d)&&d<today)?"past":"upcoming";
+      } else st="upcoming";
+    }
+    // Winner = placement "1"
     const w=t.results.find(r=>r.place==="1"||r.place==="1st"||r.place==="1er");
-    return{...t,status:st,winner:w?.team||null};
+    // Format display date
+    const fmtDate=s=>{
+      if(!s)return"";
+      const p=s.split("/");
+      if(p.length===3){const d=new Date(p[2],p[1]-1,p[0]);if(!isNaN(d))return d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});}
+      return s;
+    };
+    const dateDisplay=t.dateEnd&&t.dateEnd!==t.dateStart
+      ?fmtDate(t.dateStart)+" – "+fmtDate(t.dateEnd)
+      :fmtDate(t.dateStart||t.dateEnd);
+    return{...t,status:st,winner:w?.team||null,dateDisplay};
   }).sort((a,b)=>(a.status==="upcoming"?0:1)-(b.status==="upcoming"?0:1));
   document.getElementById("home-tourns").textContent=DATA.tournaments.length;
   document.getElementById("tourn-count").textContent=DATA.tournaments.length+" Events";
@@ -491,8 +574,8 @@ function renderRankings(){
   const max=Math.max(...data.map(r=>r.rating),1);
   const list=rankReg==="all"?data:data.filter(r=>r.region===rankReg);
   document.getElementById("rank-count").textContent=list.length+" Ranked";
-  // Prize map: team→best prize from tournaments
-  const pm={};DATA.tournaments.forEach(t=>{if(t.prize)t.results.forEach(r=>{pm[r.team]=t.prize;});});
+  // Prize map: only for tournament winners (placement = "1")
+  const pm={};DATA.tournaments.forEach(t=>{if(t.prize){const w=t.results.find(r=>r.place==="1"||r.place==="1st");if(w)pm[w.team]=t.prize;}});
   document.getElementById("rankWrap").innerHTML=`<table class="rank-table">
     <thead><tr><th>#</th><th>Team</th><th>Total Pts</th><th>Recent Pts</th><th>Tournaments</th><th>Stability</th><th>Final Rating</th></tr></thead>
     <tbody>${list.map(r=>{
@@ -509,8 +592,21 @@ let teamReg="all";
 function renderTeams(){
   const q=(document.getElementById("teamSearch")||{}).value||"";const s=q.toLowerCase();
   const ri=name=>DATA.rankings.find(r=>r.name===name)||null;
-  const pm={};DATA.tournaments.forEach(t=>{if(t.prize)t.results.forEach(r=>{pm[r.team]=t.prize;});});
-  const list=DATA.teams.filter(t=>{
+  // Prize: only teams who WON a tournament (placement = "1")
+  const pm={};
+  DATA.tournaments.forEach(t=>{
+    if(t.prize){
+      const w=t.results.find(r=>r.place==="1"||r.place==="1st");
+      if(w) pm[w.team]=t.prize;
+    }
+  });
+  // Sort: active teams first, disbanded last
+  const sorted=[...DATA.teams].sort((a,b)=>{
+    if(a.disband&&!b.disband)return 1;
+    if(!a.disband&&b.disband)return -1;
+    return 0;
+  });
+  const list=sorted.filter(t=>{
     if(teamReg!=="all"&&t.region!==teamReg)return false;
     if(s&&!t.name.toLowerCase().includes(s)&&!t.players.some(p=>p.toLowerCase().includes(s)))return false;
     return true;
@@ -519,13 +615,16 @@ function renderTeams(){
   const icon=id=>TEAM_ICONS[id]||"🎮";
   document.getElementById("teamsGrid").innerHTML=list.map((t,i)=>{
     const r=ri(t.name);
-    const rb=r?`<span class="tc-rank">Rank #${r.rank} · ${r.rating.toFixed(1)}</span>`:`<span class="tc-unranked">Unranked</span>`;
+    const rb=t.disband
+      ?`<span style="font-size:.56rem;font-weight:700;letter-spacing:.08em;padding:.1rem .38rem;border-radius:2px;text-transform:uppercase;background:rgba(200,16,46,.2);color:var(--red3)">DISBANDED</span>`
+      :r?`<span class="tc-rank">Rank #${r.rank} · ${r.rating.toFixed(1)}</span>`:`<span class="tc-unranked">Unranked</span>`;
     const prz=pm[t.name]?`<span class="tc-prize">🏆 ${pm[t.name]}</span>`:"";
     const rows=t.players.length?t.players.map(p=>{
       const disc=DISCORD_HANDLES[p]?`<span class="tc-disc">${DISCORD_HANDLES[p]}</span>`:"";
       return`<li class="tc-player"><span class="tc-flag">🏴</span><span class="tc-ign">${p}</span>${disc}</li>`;
     }).join(""):`<li class="tc-noroster">Roster not available</li>`;
-    return`<div class="team-card" style="animation-delay:${i*.03}s"><div class="tc-head"><div class="tc-icon">${icon(t.id)}</div><div class="tc-info"><div class="tc-name">${t.name}</div><div class="tc-meta"><span class="tc-region">${t.region}</span>${rb}${prz}</div></div></div><div class="tc-body"><div class="tc-rh">Roster · ${t.players.length} players</div><ul style="list-style:none">${rows}</ul></div></div>`;
+    const opacity=t.disband?"opacity:.55":"";
+    return`<div class="team-card" style="animation-delay:${i*.03}s;${opacity}"><div class="tc-head" style="${t.disband?"filter:grayscale(.4)":""}"><div class="tc-icon">${icon(t.id)}</div><div class="tc-info"><div class="tc-name">${t.name}</div><div class="tc-meta"><span class="tc-region">${t.region}</span>${rb}${prz}</div></div></div><div class="tc-body"><div class="tc-rh">Roster · ${t.players.length} players</div><ul style="list-style:none">${rows}</ul></div></div>`;
   }).join("");
 }
 function fTeam(reg,btn){teamReg=reg;document.querySelectorAll("#page-teams .ctrl-f").forEach(b=>b.classList.remove("on"));btn.classList.add("on");renderTeams();}
@@ -548,8 +647,9 @@ function buildCard(t,i){
   const labels={past:"Completed",upcoming:"Upcoming"};
   const sub=t.winner?`<div class="t-winner">🏆 Winner: ${t.winner}</div>`:`<div class="t-org">${t.org} · ${t.region}</div>`;
   const act=t.status==="upcoming"?`<a href="${t.link}" target="_blank" class="btn-p">Register</a>`:`<span class="btn-o">Archived</span>`;
-  const prize=t.prize||"Community Cup";
-  return`<div class="tourn-card" style="animation-delay:${i*.08}s"><div class="t-sp ${t.status}"></div><div class="tourn-body"><div class="t-main"><div class="t-status ts-${t.status}"><div class="t-dot"></div>${labels[t.status]||t.status}</div><div class="t-name">${t.name}</div>${sub}</div><div class="t-meta"><div class="t-mb"><span class="t-mv">${t.date}</span><span class="t-mk">Date</span></div><div class="t-mb"><span class="t-mv">${t.results.length}</span><span class="t-mk">Teams</span></div><div class="t-mb"><span class="t-mv prize">${prize}</span><span class="t-mk">Prize</span></div></div></div><div class="tourn-action">${act}</div></div>`;
+  const prize=t.prize||"—";
+  const dateStr=t.dateDisplay||t.dateStart||t.date||"TBD";
+  return`<div class="tourn-card" style="animation-delay:${i*.08}s"><div class="t-sp ${t.status}"></div><div class="tourn-body"><div class="t-main"><div class="t-status ts-${t.status}"><div class="t-dot"></div>${labels[t.status]||t.status}</div><div class="t-name">${t.name}</div>${sub}</div><div class="t-meta"><div class="t-mb"><span class="t-mv">${dateStr}</span><span class="t-mk">Date</span></div><div class="t-mb"><span class="t-mv">${t.results.length||"—"}</span><span class="t-mk">Teams</span></div><div class="t-mb"><span class="t-mv prize">${prize}</span><span class="t-mk">Prize</span></div></div></div><div class="tourn-action">${act}</div></div>`;
 }
 
 // ROSTER TRACKER
