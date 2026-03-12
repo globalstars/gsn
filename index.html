@@ -461,9 +461,9 @@ function processRoster(rows){
     const parts=d.split("/");
     if(parts.length===3){
       const dt=new Date(parts[2],parts[1]-1,parts[0]);
-      if(!isNaN(dt)) return dt.toLocaleDateString("en-US",{month:"short",day:"2-digit",year:"numeric"});
+      if(!isNaN(dt)){const dd=String(dt.getDate()).padStart(2,'0');const mm=String(dt.getMonth()+1).padStart(2,'0');return `${dd}/${mm}/${dt.getFullYear()}`;}
     }
-    try{const dt=new Date(d);if(!isNaN(dt))return dt.toLocaleDateString("en-US",{month:"short",day:"2-digit",year:"numeric"});}catch{}
+    try{const dt=new Date(d);if(!isNaN(dt)){const dd=String(dt.getDate()).padStart(2,'0');const mm=String(dt.getMonth()+1).padStart(2,'0');return `${dd}/${mm}/${dt.getFullYear()}`;}}catch{}
     return d;
   };
   const type=(o,n)=>{
@@ -557,21 +557,21 @@ function processTournaments(rows){
   const today=new Date();today.setHours(0,0,0,0);
   const fmtDate=s=>{
     if(!s)return"";
-    // Handle MM/DD/YYYY or DD/MM/YYYY
+    // Handle MM/DD/YYYY format from Google Sheets
     const p=s.split("/");
     if(p.length===3){
-      const d=new Date(p[2],p[0]-1,p[1]); // try MM/DD/YYYY
-      if(!isNaN(d)&&d.getFullYear()>2000) return d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+      const d=new Date(p[2],p[0]-1,p[1]); // MM/DD/YYYY
+      if(!isNaN(d)&&d.getFullYear()>2000){const dd=String(d.getDate()).padStart(2,'0');const mm=String(d.getMonth()+1).padStart(2,'0');return `${dd}/${mm}/${d.getFullYear()}`;}
     }
     const d2=new Date(s);
-    if(!isNaN(d2)) return d2.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+    if(!isNaN(d2)){const dd=String(d2.getDate()).padStart(2,'0');const mm=String(d2.getMonth()+1).padStart(2,'0');return `${dd}/${mm}/${d2.getFullYear()}`;}
     return s;
   };
   const parseDate=s=>{
     if(!s)return null;
     const p=s.split("/");
-    if(p.length===3) return new Date(p[2],p[1]-1,p[0]); // DD/MM/YYYY
-    return new Date(s);
+    if(p.length===3){const d=new Date(p[2],p[0]-1,p[1]);if(!isNaN(d))return d;} // MM/DD/YYYY
+    const d=new Date(s);return isNaN(d)?null:d;
   };
 
   DATA.tournaments=Object.values(map).map(t=>{
