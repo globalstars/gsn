@@ -490,6 +490,19 @@ async function fetchAll(){
     processRoster(rRoster);
     processTournaments(rTourns);
     processRankings(rRankings);
+    // Enrich free agents with their last team from roster changes
+    const FA_VARIANTS = ["free agent", "agent libre", "libre", "libre agent", "free  agent"];
+    const lastTeamMap = {};
+    DATA.rosterMoves.forEach(r => {
+      const player = r.player.toLowerCase();
+      const toFA   = FA_VARIANTS.includes(r.to.toLowerCase());
+      const fromFA = FA_VARIANTS.includes(r.from.toLowerCase());
+      if (toFA && !fromFA && r.from) lastTeamMap[player] = r.from;
+    });
+    DATA.freeAgents = DATA.freeAgents.map(p => ({
+      ...p,
+      previousTeam: lastTeamMap[p.name.toLowerCase()] || "",
+    }));
     renderAll();
   }catch(e){
     console.error("Sheet fetch error:",e);
@@ -810,7 +823,10 @@ function renderTeams(){
               <div style="display:flex;align-items:center;gap:8px;flex:1;">
                 <span style="font-size:1rem">${p.flag}</span>
                 <div>
-                  <div class="tr-name">${p.name}</div>
+                  <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;">
+                    <div class="tr-name">${p.name}</div>
+                    ${p.previousTeam?`<span style="font-size:.68rem;font-weight:600;color:var(--muted);letter-spacing:.02em;">ex-${p.previousTeam}</span>`:""}
+                  </div>
                   ${p.discord?`<div class="tr-date">${p.discord}</div>`:""}
                 </div>
               </div>
