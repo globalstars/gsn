@@ -490,19 +490,6 @@ async function fetchAll(){
     processRoster(rRoster);
     processTournaments(rTourns);
     processRankings(rRankings);
-    // Enrich free agents with their last team from roster changes
-    const FA_VARIANTS = ["free agent", "agent libre", "libre", "libre agent", "free  agent"];
-    const lastTeamMap = {};
-    DATA.rosterMoves.forEach(r => {
-      const player = r.player.toLowerCase();
-      const toFA   = FA_VARIANTS.includes(r.to.toLowerCase());
-      const fromFA = FA_VARIANTS.includes(r.from.toLowerCase());
-      if (toFA && !fromFA && r.from) lastTeamMap[player] = r.from;
-    });
-    DATA.freeAgents = DATA.freeAgents.map(p => ({
-      ...p,
-      previousTeam: lastTeamMap[p.name.toLowerCase()] || "",
-    }));
     renderAll();
   }catch(e){
     console.error("Sheet fetch error:",e);
@@ -645,6 +632,7 @@ function processTournaments(rows){
         region:(r["Region"]||"Global").trim(),
         prize:(r["Prize"]||"").trim(),
         link:(r["Register Link"]||"https://discord.gg/mH2mT66GXK").trim(),
+        liquipedia:(r["Liquipedia"]||"").trim(),
         org:"GSN",
         results:[],
       };
@@ -822,10 +810,7 @@ function renderTeams(){
               <div style="display:flex;align-items:center;gap:8px;flex:1;">
                 <span style="font-size:1rem">${p.flag}</span>
                 <div>
-                  <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;">
-                    <div class="tr-name">${p.name}</div>
-                    ${p.previousTeam?`<span style="font-size:.68rem;font-weight:600;color:var(--muted);letter-spacing:.02em;">ex-${p.previousTeam}</span>`:""}
-                  </div>
+                  <div class="tr-name">${p.name}</div>
                   ${p.discord?`<div class="tr-date">${p.discord}</div>`:""}
                 </div>
               </div>
@@ -853,9 +838,10 @@ function buildCard(t,i){
   const labels={past:"Completed",upcoming:"Upcoming"};
   const sub=t.winner?`<div class="t-winner">🏆 Winner: ${t.winner}</div>`:`<div class="t-org">${t.org} · ${t.region}</div>`;
   const act=t.status==="upcoming"?`<a href="${t.link}" target="_blank" class="btn-p">Register</a>`:``;
+  const lp=t.liquipedia?`<a href="${t.liquipedia}" target="_blank" class="btn-o" style="display:inline-flex;align-items:center;gap:5px;font-size:.7rem;background:#16a34a;color:#fff;border-color:#16a34a;"><img src="https://liquipedia.net/commons/extensions/TeamLiquidIntegration/resources/pagelogo/liquipedia_icon.png" style="width:13px;height:13px;object-fit:contain;" onerror="this.style.display='none'">Liquipedia</a>`:``;
   const prize=t.prize||"—";
   const dateStr=t.dateDisplay||t.dateStart||t.date||"TBD";
-  return`<div class="tourn-card" style="animation-delay:${i*.08}s"><div class="t-sp ${t.status}"></div><div class="tourn-body"><div class="t-main"><div class="t-status ts-${t.status}"><div class="t-dot"></div>${labels[t.status]||t.status}</div><div class="t-name">${t.name}</div>${sub}</div><div class="t-meta"><div class="t-mb"><span class="t-mv">${dateStr}</span><span class="t-mk">Date</span></div><div class="t-mb"><span class="t-mv">${t.results.length||"—"}</span><span class="t-mk">Teams</span></div><div class="t-mb"><span class="t-mv prize">${prize}</span><span class="t-mk">Prize</span></div></div></div><div class="tourn-action">${act}</div></div>`;
+  return`<div class="tourn-card" style="animation-delay:${i*.08}s"><div class="t-sp ${t.status}"></div><div class="tourn-body"><div class="t-main"><div class="t-status ts-${t.status}"><div class="t-dot"></div>${labels[t.status]||t.status}</div><div class="t-name">${t.name}</div>${sub}</div><div class="t-meta"><div class="t-mb"><span class="t-mv">${dateStr}</span><span class="t-mk">Date</span></div><div class="t-mb"><span class="t-mv">${t.results.length||"—"}</span><span class="t-mk">Teams</span></div><div class="t-mb"><span class="t-mv prize">${prize}</span><span class="t-mk">Prize</span></div></div></div><div class="tourn-action" style="display:flex;flex-direction:column;gap:6px;align-items:stretch;">${act}${lp}</div></div>`;
 }
 
 // ROSTER TRACKER
