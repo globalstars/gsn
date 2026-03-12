@@ -829,7 +829,8 @@ function renderTeams(){
                   ${p.discord?`<div class="tr-date">${p.discord}</div>`:""}
                 </div>
               </div>
-              <span class="tr-badge tr-badge-join">Free Agent</span>            </div>
+              <span class="tr-badge tr-badge-join">Free Agent</span>
+            </div>
           </div>`).join("")}
       </div>
     </div>` : "");
@@ -872,8 +873,7 @@ function renderTracker(){
   const bc={join:"tr-badge-join",transfer:"tr-badge-transfer",leave:"tr-badge-leave"};
   const bl={join:"Signing",transfer:"Transfer",leave:"Departure"};
   const ar={join:"→",transfer:"⇒",leave:"→"};
-  document.getElementById("trackerGrid").innerHTML=list.map((m,i)=>{
-    document.getElementById("trackerGrid").innerHTML=list.map((m,i)=>`<div class="tr-card" style="animation-delay:${Math.min(i,25)*.018}s"><div class="${sc[m.type]}"></div><div class="tr-body"><div class="tr-player"><div class="tr-name">${m.player}</div><div class="tr-date">${m.date}</div></div><div class="tr-move"><span class="tr-from">${m.from}</span><span style="font-size:.85rem"> ${ar[m.type]} </span><span class="tr-to" style="${m.type==="leave"?"color:var(--muted)":""}">${m.to}</span></div><span class="tr-badge ${bc[m.type]}">${bl[m.type]}</span></div></div>`).join("");
+  document.getElementById("trackerGrid").innerHTML=list.map((m,i)=>`<div class="tr-card" style="animation-delay:${Math.min(i,25)*.018}s"><div class="${sc[m.type]}"></div><div class="tr-body"><div class="tr-player"><div class="tr-name">${m.player}</div><div class="tr-date">${m.date}</div></div><div class="tr-move"><span class="tr-from">${m.from}</span><span style="font-size:.85rem"> ${ar[m.type]} </span><span class="tr-to" style="${m.type==="leave"?"color:var(--muted)":""}">${m.to}</span></div><span class="tr-badge ${bc[m.type]}">${bl[m.type]}</span></div></div>`).join("");
 }
 
 // Filter functions (consolidated)
