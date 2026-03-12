@@ -299,8 +299,7 @@ footer{background:var(--navy);margin-top:4rem;padding:1.8rem 2.5rem;display:flex
     <button class="nav-btn" onclick="showPage('tournaments')">Tournaments</button>
     <button class="nav-btn" onclick="showPage('tracker')">Roster Tracker</button>
   </div>
-  <a href="https://discord.gg/mH2mT66GXK" target="_blank" class="nav-discord">
-    <svg width="13" height="10" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.4a.2.2 0 0 0-.2.1 40.7 40.7 0 0 0-1.8 3.7 54 54 0 0 0-16.2 0A37.7 37.7 0 0 0 25.6.5a.2.2 0 0 0-.2-.1A58.4 58.4 0 0 0 10.9 4.9a.2.2 0 0 0-.1.1C1.6 18.7-.9 32.1.3 45.4a.2.2 0 0 0 .1.2 58.8 58.8 0 0 0 17.7 8.9.2.2 0 0 0 .2-.1 42 42 0 0 0 3.6-5.9.2.2 0 0 0-.1-.3 38.7 38.7 0 0 1-5.5-2.6.2.2 0 0 1 0-.4l1.1-.9a.2.2 0 0 1 .2 0c11.6 5.3 24.1 5.3 35.5 0a.2.2 0 0 1 .2 0l1.1.9a.2.2 0 0 1 0 .4 36.1 36.1 0 0 1-5.5 2.6.2.2 0 0 0-.1.3 47.1 47.1 0 0 0 3.6 5.9.2.2 0 0 0 .2.1 58.6 58.6 0 0 0 17.8-8.9.2.2 0 0 0 .1-.2c1.5-15.3-2.5-28.6-10.5-40.4a.2.2 0 0 0-.1-.1z"/></svg>
+  <a href="https://discord.gg/mH2mT66GXK" target="_blank" class="nav-discord" id="nav-discord-link">
     Discord
   </a>
   <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileMenu()" aria-label="Menu">
@@ -315,8 +314,7 @@ footer{background:var(--navy);margin-top:4rem;padding:1.8rem 2.5rem;display:flex
   <button class="mobile-menu-btn" id="mm-teams" onclick="showPage('teams');closeMobileMenu()">🛡️ Teams</button>
   <button class="mobile-menu-btn" id="mm-tournaments" onclick="showPage('tournaments');closeMobileMenu()">⚔️ Tournaments</button>
   <button class="mobile-menu-btn" id="mm-tracker" onclick="showPage('tracker');closeMobileMenu()">🔄 Roster Tracker</button>
-  <a href="https://discord.gg/mH2mT66GXK" target="_blank" class="mobile-menu-discord">
-    <svg width="13" height="10" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.4a.2.2 0 0 0-.2.1 40.7 40.7 0 0 0-1.8 3.7 54 54 0 0 0-16.2 0A37.7 37.7 0 0 0 25.6.5a.2.2 0 0 0-.2-.1A58.4 58.4 0 0 0 10.9 4.9a.2.2 0 0 0-.1.1C1.6 18.7-.9 32.1.3 45.4a.2.2 0 0 0 .1.2 58.8 58.8 0 0 0 17.7 8.9.2.2 0 0 0 .2-.1 42 42 0 0 0 3.6-5.9.2.2 0 0 0-.1-.3 38.7 38.7 0 0 1-5.5-2.6.2.2 0 0 1 0-.4l1.1-.9a.2.2 0 0 1 .2 0c11.6 5.3 24.1 5.3 35.5 0a.2.2 0 0 1 .2 0l1.1.9a.2.2 0 0 1 0 .4 36.1 36.1 0 0 1-5.5 2.6.2.2 0 0 0-.1.3 47.1 47.1 0 0 0 3.6 5.9.2.2 0 0 0 .2.1 58.6 58.6 0 0 0 17.8-8.9.2.2 0 0 0 .1-.2c1.5-15.3-2.5-28.6-10.5-40.4a.2.2 0 0 0-.1-.1z"/></svg>
+  <a href="https://discord.gg/mH2mT66GXK" target="_blank" class="mobile-menu-discord" id="mobile-discord-link">
     Discord
   </a>
 </div>
@@ -352,14 +350,14 @@ footer{background:var(--navy);margin-top:4rem;padding:1.8rem 2.5rem;display:flex
   </div>
   <div class="discord-block">
     <div class="disc-left">
-      <div class="disc-badge"><svg width="13" height="10" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.4a.2.2 0 0 0-.2.1 40.7 40.7 0 0 0-1.8 3.7 54 54 0 0 0-16.2 0A37.7 37.7 0 0 0 25.6.5a.2.2 0 0 0-.2-.1A58.4 58.4 0 0 0 10.9 4.9a.2.2 0 0 0-.1.1C1.6 18.7-.9 32.1.3 45.4a.2.2 0 0 0 .1.2 58.8 58.8 0 0 0 17.7 8.9.2.2 0 0 0 .2-.1 42 42 0 0 0 3.6-5.9.2.2 0 0 0-.1-.3 38.7 38.7 0 0 1-5.5-2.6.2.2 0 0 1 0-.4l1.1-.9a.2.2 0 0 1 .2 0c11.6 5.3 24.1 5.3 35.5 0a.2.2 0 0 1 .2 0l1.1.9a.2.2 0 0 1 0 .4 36.1 36.1 0 0 1-5.5 2.6.2.2 0 0 0-.1.3 47.1 47.1 0 0 0 3.6 5.9.2.2 0 0 0 .2.1 58.6 58.6 0 0 0 17.8-8.9.2.2 0 0 0 .1-.2c1.5-15.3-2.5-28.6-10.5-40.4a.2.2 0 0 0-.1-.1z"/></svg> Official Discord</div>
+      <div class="disc-badge" id="disc-badge-icon"> Official Discord</div>
       <div class="disc-title">Join the community</div>
       <div class="disc-desc">Our Discord is where everything happens. Get the latest <strong>esport news</strong>, find <strong>scrim partners</strong>, or enter the <strong>free agent pool</strong> to get recruited.</div>
       <div class="disc-pills"><span class="disc-pill">📰 Esport News</span><span class="disc-pill">🤝 Team Scrims</span><span class="disc-pill">🎯 Free Agents</span><span class="disc-pill">🏆 Tournaments</span><span class="disc-pill">📢 Announcements</span></div>
     </div>
     <div><a href="https://discord.gg/mH2mT66GXK" target="_blank" class="btn-disc">discord.gg/mH2mT66GXK</a></div>
   </div>
-  <footer><div><div class="footer-brand">Global <span class="red">Stars</span> Network</div><div class="footer-sub">© 2026 GSN — R6 MOBILE COMPETITIVE</div></div><div class="footer-links"><a href="https://discord.gg/mH2mT66GXK" target="_blank">Discord</a><a href="#" onclick="showPage('rankings')">Rankings</a><a href="#" onclick="showPage('teams')">Teams</a><a href="#" onclick="showPage('tournaments')">Tournaments</a></div></footer>
+  <footer id="footer-home"><div><div class="footer-brand">Global <span class="red">Stars</span> Network</div><div class="footer-sub">© 2026 GSN — R6 MOBILE COMPETITIVE</div></div><div class="footer-links"><a href="https://discord.gg/mH2mT66GXK" target="_blank">Discord</a><a href="#" onclick="showPage('rankings')">Rankings</a><a href="#" onclick="showPage('teams')">Teams</a><a href="#" onclick="showPage('tournaments')">Tournaments</a></div></footer>
 </div>
 
 <!-- RANKINGS -->
@@ -378,7 +376,7 @@ footer{background:var(--navy);margin-top:4rem;padding:1.8rem 2.5rem;display:flex
     </div>
     <div id="rankWrap"><div class="state-box"><div class="spinner"></div><div class="state-title">Loading rankings…</div><div class="state-desc">Syncing from Google Sheet</div></div></div>
   </div>
-  <footer><div><div class="footer-brand">Global <span class="red">Stars</span> Network</div><div class="footer-sub">© 2026 GSN</div></div><div class="footer-links"><a href="#" onclick="showPage('home')">Home</a><a href="https://discord.gg/mH2mT66GXK" target="_blank">Discord</a></div></footer>
+  <footer class="page-footer"></footer>
 </div>
 
 <!-- TEAMS -->
@@ -398,7 +396,7 @@ footer{background:var(--navy);margin-top:4rem;padding:1.8rem 2.5rem;display:flex
     </div>
     <div class="teams-grid" id="teamsGrid"><div class="state-box"><div class="spinner"></div><div class="state-title">Loading teams…</div></div></div>
   </div>
-  <footer><div><div class="footer-brand">Global <span class="red">Stars</span> Network</div><div class="footer-sub">© 2026 GSN</div></div><div class="footer-links"><a href="#" onclick="showPage('home')">Home</a><a href="https://discord.gg/mH2mT66GXK" target="_blank">Discord</a></div></footer>
+  <footer class="page-footer"></footer>
 </div>
 
 <!-- TOURNAMENTS -->
@@ -410,7 +408,7 @@ footer{background:var(--navy);margin-top:4rem;padding:1.8rem 2.5rem;display:flex
     </div>
     <div id="tournList"><div class="state-box"><div class="spinner"></div><div class="state-title">Loading tournaments…</div><div class="state-desc">Syncing from Google Sheet</div></div></div>
   </div>
-  <footer><div><div class="footer-brand">Global <span class="red">Stars</span> Network</div><div class="footer-sub">© 2026 GSN</div></div><div class="footer-links"><a href="#" onclick="showPage('home')">Home</a><a href="https://discord.gg/mH2mT66GXK" target="_blank">Discord</a></div></footer>
+  <footer class="page-footer"></footer>
 </div>
 
 <!-- ROSTER TRACKER -->
@@ -429,7 +427,7 @@ footer{background:var(--navy);margin-top:4rem;padding:1.8rem 2.5rem;display:flex
     </div>
     <div class="tracker-grid" id="trackerGrid"><div class="state-box"><div class="spinner"></div><div class="state-title">Loading moves…</div></div></div>
   </div>
-  <footer><div><div class="footer-brand">Global <span class="red">Stars</span> Network</div><div class="footer-sub">© 2026 GSN</div></div><div class="footer-links"><a href="#" onclick="showPage('home')">Home</a><a href="https://discord.gg/mH2mT66GXK" target="_blank">Discord</a></div></footer>
+  <footer class="page-footer"></footer>
 </div>
 
 <script>
@@ -449,6 +447,9 @@ const URL_RANKINGS = BASE + "RANKINGS_AUTO";
 const FLAGS={RU:"🇷🇺",UK:"🇬🇧",IR:"🇮🇷",US:"🇺🇸",IT:"🇮🇹",DE:"🇩🇪",FR:"🇫🇷",BR:"🇧🇷",MX:"🇲🇽",CR:"🇨🇷",EC:"🇪🇨",PA:"🇵🇦",IQ:"🇮🇶",TR:"🇹🇷",CH:"🇨🇭",CA:"🇨🇦",LT:"🇱🇹",CY:"🇨🇾"};
 const DISCORD_HANDLES={"MrBom":"@mrbom","Tora":"@tora5349","TotherSnail":"@dxniel_101","Hopeless":"@hopelessnessshope","Acew":"@realacew","Trackz":"@trackzforog","Seraph":"@love6169","Gaspard":"@gaspardr6m","AKZ":"@AKZ.r6m","Sky":"@skyr6m","KILLZONE":"@killzoner6m","Legend":"@llegend04","Splice":"@splicee8","SZ":"@szistooshort","Exo":"@exo.0121","Tyx":"@tyxsakchaser"};
 const TEAM_ICONS={TEAM_001:"⚡",TEAM_002:"🌊",TEAM_003:"💀",TEAM_004:"👑",TEAM_005:"🤝",TEAM_006:"🛡️",TEAM_007:"🔱",TEAM_008:"🔥",TEAM_009:"⚔️",TEAM_010:"🦁",TEAM_011:"🌀",TEAM_012:"🧠",TEAM_013:"💪",TEAM_014:"🎯",TEAM_015:"☠️",TEAM_016:"🌈",TEAM_017:"🔭"};
+const flag=c=>FLAGS[c]||"🏴";
+const icon=id=>TEAM_ICONS[id]||"🎮";
+const DISCORD_SVG=`<svg width="13" height="10" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.4a.2.2 0 0 0-.2.1 40.7 40.7 0 0 0-1.8 3.7 54 54 0 0 0-16.2 0A37.7 37.7 0 0 0 25.6.5a.2.2 0 0 0-.2-.1A58.4 58.4 0 0 0 10.9 4.9a.2.2 0 0 0-.1.1C1.6 18.7-.9 32.1.3 45.4a.2.2 0 0 0 .1.2 58.8 58.8 0 0 0 17.7 8.9.2.2 0 0 0 .2-.1 42 42 0 0 0 3.6-5.9.2.2 0 0 0-.1-.3 38.7 38.7 0 0 1-5.5-2.6.2.2 0 0 1 0-.4l1.1-.9a.2.2 0 0 1 .2 0c11.6 5.3 24.1 5.3 35.5 0a.2.2 0 0 1 .2 0l1.1.9a.2.2 0 0 1 0 .4 36.1 36.1 0 0 1-5.5 2.6.2.2 0 0 0-.1.3 47.1 47.1 0 0 0 3.6 5.9.2.2 0 0 0 .2.1 58.6 58.6 0 0 0 17.8-8.9.2.2 0 0 0 .1-.2c1.5-15.3-2.5-28.6-10.5-40.4a.2.2 0 0 0-.1-.1z"/></svg>`;
 
 // Runtime data (populated from sheet)
 let DATA = { teams:[], players:{}, freeAgents:[], rankings:[], tournaments:[], rosterMoves:[] };
@@ -489,6 +490,19 @@ async function fetchAll(){
     processRoster(rRoster);
     processTournaments(rTourns);
     processRankings(rRankings);
+    // Enrich free agents with their last team from roster changes
+    const FA_VARIANTS = ["free agent", "agent libre", "libre", "libre agent", "free  agent"];
+    const lastTeamMap = {};
+    DATA.rosterMoves.forEach(r => {
+      const player = r.player.toLowerCase();
+      const toFA   = FA_VARIANTS.includes(r.to.toLowerCase());
+      const fromFA = FA_VARIANTS.includes(r.from.toLowerCase());
+      if (toFA && !fromFA && r.from) lastTeamMap[player] = r.from;
+    });
+    DATA.freeAgents = DATA.freeAgents.map(p => ({
+      ...p,
+      previousTeam: lastTeamMap[p.name.toLowerCase()] || "",
+    }));
     renderAll();
   }catch(e){
     console.error("Sheet fetch error:",e);
@@ -511,22 +525,15 @@ function processTeams(rows, playerRows){
   });
 
   // Build rosters from PLAYER database (Current Team column)
-  const COUNTRY_FLAGS={RU:"🇷🇺",UK:"🇬🇧",IR:"🇮🇷",US:"🇺🇸",IT:"🇮🇹",DE:"🇩🇪",FR:"🇫🇷",
-    BR:"🇧🇷",MX:"🇲🇽",CR:"🇨🇷",EC:"🇪🇨",PA:"🇵🇦",IQ:"🇮🇶",TR:"🇹🇷",CH:"🇨🇭",
-    CA:"🇨🇦",LT:"🇱🇹",CY:"🇨🇾"};
-
   playerRows.forEach(p=>{
-    // Handle shifted headers — opensheet may label columns differently
-    // Try multiple possible key names for each field
     const name=(p["Username"]||p["username"]||"").trim();
     const teamName=(p["Current Team"]||p["current team"]||"").trim();
     const discord=(p["Discord (optional)"]||p["Discord"]||p["discord"]||"").trim();
     const country=(p["Country (optional)"]||p["Country"]||p["country"]||"").trim();
     if(!name||!teamName||teamName==="Free Agent"||name==="Username")return;
-    // Find team by name (case-insensitive)
     const team=Object.values(teamMap).find(t=>t.name.toLowerCase()===teamName.toLowerCase());
     if(!team)return;
-    team.players.push({name,discord,flag:COUNTRY_FLAGS[country]||"🏴"});
+    team.players.push({name,discord,flag:flag(country)});
   });
 
   // Mark disbanded: teams with Total Points <= -100 in TEAMS_DATABASE
@@ -541,9 +548,6 @@ function processTeams(rows, playerRows){
   DATA.teams=Object.values(teamMap);
 
   // Free agents — players with no team
-  const COUNTRY_FLAGS2={RU:"🇷🇺",UK:"🇬🇧",IR:"🇮🇷",US:"🇺🇸",IT:"🇮🇹",DE:"🇩🇪",FR:"🇫🇷",
-    BR:"🇧🇷",MX:"🇲🇽",CR:"🇨🇷",EC:"🇪🇨",PA:"🇵🇦",IQ:"🇮🇶",TR:"🇹🇷",CH:"🇨🇭",
-    CA:"🇨🇦",LT:"🇱🇹",CY:"🇨🇾"};
   DATA.freeAgents=playerRows
     .filter(p=>{
       const name=(p["Username"]||"").trim();
@@ -554,7 +558,7 @@ function processTeams(rows, playerRows){
       name:(p["Username"]||"").trim(),
       discord:(p["Discord (optional)"]||"").trim(),
       country:(p["Country (optional)"]||"").trim(),
-      flag:COUNTRY_FLAGS2[(p["Country (optional)"]||"").trim()]||"🏴",
+      flag:flag((p["Country (optional)"]||"").trim()),
     }));
 
   let playerCount=0; DATA.teams.forEach(t=>playerCount+=t.players.length);
@@ -711,31 +715,41 @@ function showError(msg){
   ["rankWrap","teamsGrid","tournList","trackerGrid"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=err;});
 }
 
-// NAV
+// NAV — cache repeated querySelector targets
+const _pages=()=>document.querySelectorAll(".page");
+const _navBtns=()=>document.querySelectorAll(".nav-btn");
+const _mmBtns=()=>document.querySelectorAll(".mobile-menu-btn");
+
 function showPage(id){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  _pages().forEach(p=>p.classList.remove("active"));
   document.getElementById("page-"+id).classList.add("active");
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",(b.getAttribute("onclick")||"").includes("'"+id+"'")));
-  // Sync mobile menu active state
-  document.querySelectorAll(".mobile-menu-btn").forEach(b=>b.classList.remove("active"));
+  _navBtns().forEach(b=>b.classList.toggle("active",(b.getAttribute("onclick")||"").includes("'"+id+"'")));
+  _mmBtns().forEach(b=>b.classList.remove("active"));
   const mmBtn=document.getElementById("mm-"+id);
   if(mmBtn) mmBtn.classList.add("active");
   window.scrollTo(0,0);
 }
+// Cache mobile menu elements once DOM is ready
+let _mobileMenu,_hamburgerBtn;
+document.addEventListener("DOMContentLoaded",()=>{
+  _mobileMenu=document.getElementById("mobileMenu");
+  _hamburgerBtn=document.getElementById("navHamburger");
+},{ once:true });
+
 function toggleMobileMenu(){
-  const menu=document.getElementById("mobileMenu");
-  const btn=document.getElementById("navHamburger");
+  const menu=_mobileMenu||document.getElementById("mobileMenu");
+  const btn=_hamburgerBtn||document.getElementById("navHamburger");
   menu.classList.toggle("open");
   btn.classList.toggle("open");
 }
 function closeMobileMenu(){
-  document.getElementById("mobileMenu").classList.remove("open");
-  document.getElementById("navHamburger").classList.remove("open");
+  (_mobileMenu||document.getElementById("mobileMenu")).classList.remove("open");
+  (_hamburgerBtn||document.getElementById("navHamburger")).classList.remove("open");
 }
 // Close mobile menu on outside click
 document.addEventListener("click",e=>{
-  const menu=document.getElementById("mobileMenu");
-  const btn=document.getElementById("navHamburger");
+  const menu=_mobileMenu||document.getElementById("mobileMenu");
+  const btn=_hamburgerBtn||document.getElementById("navHamburger");
   if(menu.classList.contains("open")&&!menu.contains(e.target)&&!btn.contains(e.target)){
     closeMobileMenu();
   }
@@ -760,7 +774,6 @@ function renderRankings(){
       return`<tr><td><span class="rk-num ${rc}">${r.rank}</span></td><td><span class="rk-team">${r.name}</span><span class="reg-tag reg-${r.region}">${r.region}</span>${pt}</td><td><span style="font-weight:700">${r.pts}</span></td><td style="font-weight:600">${r.recent}</td><td>${r.tourn}</td><td>${r.stab.toFixed(1)}</td><td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${bar}%"></div></div><span class="bar-val">${r.rating.toFixed(1)}</span></div></td></tr>`;
     }).join("")}</tbody></table>`;
 }
-function fRank(reg,btn){rankReg=reg;document.querySelectorAll("#page-rankings .ctrl-f").forEach(b=>b.classList.remove("on"));btn.classList.add("on");renderRankings();}
 
 // TEAMS
 let teamReg="all";
@@ -778,7 +791,6 @@ function renderTeams(){
     return true;
   });
   document.getElementById("teams-count").textContent=list.length+" Teams";
-  const icon=id=>TEAM_ICONS[id]||"🎮";
   // Free agents section (only show when not searching by region or query hides them)
   const faList=DATA.freeAgents.filter(p=>{
     if(s&&!p.name.toLowerCase().includes(s))return false;
@@ -810,17 +822,18 @@ function renderTeams(){
               <div style="display:flex;align-items:center;gap:8px;flex:1;">
                 <span style="font-size:1rem">${p.flag}</span>
                 <div>
-                  <div class="tr-name">${p.name}</div>
+                  <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;">
+                    <div class="tr-name">${p.name}</div>
+                    ${p.previousTeam?`<span style="font-size:.68rem;font-weight:600;color:var(--muted);letter-spacing:.02em;">ex-${p.previousTeam}</span>`:""}
+                  </div>
                   ${p.discord?`<div class="tr-date">${p.discord}</div>`:""}
                 </div>
               </div>
-              <span class="tr-badge tr-badge-join">Free Agent</span>
-            </div>
+              <span class="tr-badge tr-badge-join">Free Agent</span>            </div>
           </div>`).join("")}
       </div>
     </div>` : "");
 }
-function fTeam(reg,btn){teamReg=reg;document.querySelectorAll("#page-teams .ctrl-f").forEach(b=>b.classList.remove("on"));btn.classList.add("on");renderTeams();}
 
 // TOURNAMENTS
 function renderTournaments(){
@@ -859,13 +872,32 @@ function renderTracker(){
   const bc={join:"tr-badge-join",transfer:"tr-badge-transfer",leave:"tr-badge-leave"};
   const bl={join:"Signing",transfer:"Transfer",leave:"Departure"};
   const ar={join:"→",transfer:"⇒",leave:"→"};
-  document.getElementById("trackerGrid").innerHTML=list.map((m,i)=>`<div class="tr-card" style="animation-delay:${Math.min(i,25)*.018}s"><div class="${sc[m.type]}"></div><div class="tr-body"><div class="tr-player"><div class="tr-name">${m.player}</div><div class="tr-date">${m.date}</div></div><div class="tr-move"><span class="tr-from">${m.from}</span><span style="font-size:.85rem"> ${ar[m.type]} </span><span class="tr-to" style="${m.type==="leave"?"color:var(--muted)":""}">${m.to}</span></div><span class="tr-badge ${bc[m.type]}">${bl[m.type]}</span></div></div>`).join("");
+  document.getElementById("trackerGrid").innerHTML=list.map((m,i)=>{
+    document.getElementById("trackerGrid").innerHTML=list.map((m,i)=>`<div class="tr-card" style="animation-delay:${Math.min(i,25)*.018}s"><div class="${sc[m.type]}"></div><div class="tr-body"><div class="tr-player"><div class="tr-name">${m.player}</div><div class="tr-date">${m.date}</div></div><div class="tr-move"><span class="tr-from">${m.from}</span><span style="font-size:.85rem"> ${ar[m.type]} </span><span class="tr-to" style="${m.type==="leave"?"color:var(--muted)":""}">${m.to}</span></div><span class="tr-badge ${bc[m.type]}">${bl[m.type]}</span></div></div>`).join("");
 }
+
+// Filter functions (consolidated)
+function fRank(reg,btn){rankReg=reg;document.querySelectorAll("#page-rankings .ctrl-f").forEach(b=>b.classList.remove("on"));btn.classList.add("on");renderRankings();}
+function fTeam(reg,btn){teamReg=reg;document.querySelectorAll("#page-teams .ctrl-f").forEach(b=>b.classList.remove("on"));btn.classList.add("on");renderTeams();}
 function fTracker(type,btn){trackerFilter=type;document.querySelectorAll("#page-tracker .ctrl-f").forEach(b=>b.classList.remove("on"));btn.classList.add("on");renderTracker();}
 
 // ═══════════════════════════════════════════════════════════
-// BOOT
+// BOOT — inject shared elements, then fetch data
 // ═══════════════════════════════════════════════════════════
+(function initDOM(){
+  // Inject Discord SVG into nav & mobile menu links
+  const navDisc=document.getElementById("nav-discord-link");
+  if(navDisc) navDisc.insertAdjacentHTML("afterbegin",DISCORD_SVG+" ");
+  const mobileDisc=document.getElementById("mobile-discord-link");
+  if(mobileDisc) mobileDisc.insertAdjacentHTML("afterbegin",DISCORD_SVG+" ");
+  const discBadge=document.getElementById("disc-badge-icon");
+  if(discBadge) discBadge.insertAdjacentHTML("afterbegin",DISCORD_SVG+" ");
+
+  // Inject shared footer into inner pages
+  const footerHTML=`<div><div class="footer-brand">Global <span class="red">Stars</span> Network</div><div class="footer-sub">© 2026 GSN</div></div><div class="footer-links"><a href="#" onclick="showPage('home')">Home</a><a href="https://discord.gg/mH2mT66GXK" target="_blank">Discord</a></div>`;
+  document.querySelectorAll(".page-footer").forEach(f=>f.innerHTML=footerHTML);
+})();
+
 fetchAll();
 </script>
 </body>
