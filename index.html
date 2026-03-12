@@ -191,8 +191,99 @@ footer{background:var(--navy);margin-top:4rem;padding:1.8rem 2.5rem;display:flex
 .footer-links{display:flex;gap:1.8rem;}
 .footer-links a{text-decoration:none;color:rgba(255,255,255,.42);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;transition:color .15s;}
 .footer-links a:hover{color:#fff;}
-@media(max-width:900px){.features-grid{grid-template-columns:1fr 1fr;}nav .nav-links{display:none;}.tourn-card{grid-template-columns:6px 1fr;}.tourn-action{display:none;}.discord-block{flex-direction:column;gap:1.5rem;}.inner-page{padding:1.5rem 1rem;}}
-@media(max-width:600px){.features-grid{grid-template-columns:1fr;}}
+/* ── HAMBURGER NAV ── */
+.nav-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:.4rem;margin-left:.5rem;}
+.nav-hamburger span{display:block;width:22px;height:2px;background:rgba(255,255,255,.7);border-radius:2px;transition:all .25s;}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.nav-hamburger.open span:nth-child(2){opacity:0;}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;z-index:499;background:var(--navy);border-bottom:2px solid var(--red);flex-direction:column;padding:.5rem 0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu-btn{background:none;border:none;color:rgba(255,255,255,.7);font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.9rem 1.6rem;text-align:left;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06);transition:color .15s,background .15s;}
+.mobile-menu-btn:hover,.mobile-menu-btn.active{color:#fff;background:rgba(255,255,255,.05);}
+.mobile-menu-btn.active{border-left:3px solid var(--red);}
+.mobile-menu-discord{display:flex;align-items:center;gap:8px;background:#5865F2;color:#fff;padding:.9rem 1.6rem;font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;margin:.5rem 1rem .5rem;border-radius:4px;justify-content:center;}
+
+/* ── RANKINGS TABLE MOBILE ── */
+.rank-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:6px;}
+
+/* ── TABLET ── */
+@media(max-width:900px){
+  .features-grid{grid-template-columns:1fr 1fr;}
+  nav .nav-links{display:none;}
+  nav .nav-discord{display:none;}
+  .nav-hamburger{display:flex;}
+  .tourn-card{grid-template-columns:6px 1fr;}
+  .tourn-action{display:none;}
+  .discord-block{flex-direction:column;gap:1.5rem;padding:1.6rem;}
+  .inner-page{padding:1.5rem 1rem;}
+  .stat-cell{padding:1rem .6rem;}
+}
+
+/* ── MOBILE ── */
+@media(max-width:600px){
+  /* Nav */
+  nav{padding:0 1rem;}
+  .nav-name{font-size:.95rem;}
+  .nav-tagline{display:none;}
+
+  /* Hero */
+  .hero{padding:3rem 1.2rem 0;}
+  .hero-logo{width:110px;height:110px;margin-bottom:1.3rem;}
+  .hero-title{font-size:clamp(2.2rem,13vw,3.5rem);}
+  .hero-desc{font-size:.88rem;margin-bottom:1.6rem;}
+  .hero-ctas{gap:.7rem;}
+  .btn-ph,.btn-gh{padding:.6rem 1.3rem;font-size:.78rem;}
+  .stats-strip{flex-direction:column;}
+  .stat-cell{border-right:none;border-bottom:1px solid rgba(255,255,255,.08);max-width:100%;padding:.9rem 1rem;}
+  .stat-cell:last-child{border-bottom:none;}
+
+  /* Features */
+  .features-section{padding:2.2rem 1.2rem;}
+  .features-grid{grid-template-columns:1fr;}
+  .feat-card{padding:1.2rem 1rem;}
+
+  /* Discord block */
+  .discord-block{padding:1.4rem 1.2rem;margin:0 0 2.5rem;border-radius:6px;}
+  .disc-title{font-size:1.4rem;}
+
+  /* Page headers */
+  .page-header{flex-direction:column;align-items:flex-start;gap:.6rem;margin-bottom:1.3rem;}
+  .page-h1{font-size:1.55rem;}
+
+  /* Ctrl row — filters wrap nicely */
+  .ctrl-row{gap:.4rem;}
+  .ctrl-f{padding:.45rem .75rem;font-size:.7rem;}
+  .ctrl-input{min-width:0;}
+
+  /* Rankings table — horizontal scroll */
+  #rankWrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .rank-table{min-width:540px;}
+  .rank-table th,.rank-table td{padding:.65rem .7rem;font-size:.75rem;}
+
+  /* Teams grid */
+  .teams-grid{grid-template-columns:1fr;}
+
+  /* Tournament cards */
+  .tourn-card{grid-template-columns:5px 1fr;}
+  .tourn-body{padding:.9rem 1rem;gap:1rem;}
+  .t-name{font-size:1rem;}
+  .t-meta{gap:1rem;flex-wrap:wrap;}
+  .t-mv{font-size:.88rem;}
+
+  /* Tracker cards */
+  .tr-body{padding:.7rem .9rem;gap:.7rem;flex-wrap:wrap;}
+  .tr-player{min-width:100px;}
+  .tr-move{min-width:0;flex-wrap:wrap;gap:4px;}
+  .tr-from,.tr-to{font-size:.78rem;}
+
+  /* Footer */
+  footer{padding:1.4rem 1.2rem;flex-direction:column;align-items:flex-start;gap:.8rem;margin-top:2.5rem;}
+  .footer-links{gap:1.2rem;flex-wrap:wrap;}
+
+  /* State boxes */
+  .state-box{padding:2rem 1.2rem;}
+}
 </style>
 </head>
 <body>
@@ -212,7 +303,23 @@ footer{background:var(--navy);margin-top:4rem;padding:1.8rem 2.5rem;display:flex
     <svg width="13" height="10" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.4a.2.2 0 0 0-.2.1 40.7 40.7 0 0 0-1.8 3.7 54 54 0 0 0-16.2 0A37.7 37.7 0 0 0 25.6.5a.2.2 0 0 0-.2-.1A58.4 58.4 0 0 0 10.9 4.9a.2.2 0 0 0-.1.1C1.6 18.7-.9 32.1.3 45.4a.2.2 0 0 0 .1.2 58.8 58.8 0 0 0 17.7 8.9.2.2 0 0 0 .2-.1 42 42 0 0 0 3.6-5.9.2.2 0 0 0-.1-.3 38.7 38.7 0 0 1-5.5-2.6.2.2 0 0 1 0-.4l1.1-.9a.2.2 0 0 1 .2 0c11.6 5.3 24.1 5.3 35.5 0a.2.2 0 0 1 .2 0l1.1.9a.2.2 0 0 1 0 .4 36.1 36.1 0 0 1-5.5 2.6.2.2 0 0 0-.1.3 47.1 47.1 0 0 0 3.6 5.9.2.2 0 0 0 .2.1 58.6 58.6 0 0 0 17.8-8.9.2.2 0 0 0 .1-.2c1.5-15.3-2.5-28.6-10.5-40.4a.2.2 0 0 0-.1-.1z"/></svg>
     Discord
   </a>
+  <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-btn active" id="mm-home" onclick="showPage('home');closeMobileMenu()">🏠 Home</button>
+  <button class="mobile-menu-btn" id="mm-rankings" onclick="showPage('rankings');closeMobileMenu()">🏆 Rankings</button>
+  <button class="mobile-menu-btn" id="mm-teams" onclick="showPage('teams');closeMobileMenu()">🛡️ Teams</button>
+  <button class="mobile-menu-btn" id="mm-tournaments" onclick="showPage('tournaments');closeMobileMenu()">⚔️ Tournaments</button>
+  <button class="mobile-menu-btn" id="mm-tracker" onclick="showPage('tracker');closeMobileMenu()">🔄 Roster Tracker</button>
+  <a href="https://discord.gg/mH2mT66GXK" target="_blank" class="mobile-menu-discord">
+    <svg width="13" height="10" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.4a.2.2 0 0 0-.2.1 40.7 40.7 0 0 0-1.8 3.7 54 54 0 0 0-16.2 0A37.7 37.7 0 0 0 25.6.5a.2.2 0 0 0-.2-.1A58.4 58.4 0 0 0 10.9 4.9a.2.2 0 0 0-.1.1C1.6 18.7-.9 32.1.3 45.4a.2.2 0 0 0 .1.2 58.8 58.8 0 0 0 17.7 8.9.2.2 0 0 0 .2-.1 42 42 0 0 0 3.6-5.9.2.2 0 0 0-.1-.3 38.7 38.7 0 0 1-5.5-2.6.2.2 0 0 1 0-.4l1.1-.9a.2.2 0 0 1 .2 0c11.6 5.3 24.1 5.3 35.5 0a.2.2 0 0 1 .2 0l1.1.9a.2.2 0 0 1 0 .4 36.1 36.1 0 0 1-5.5 2.6.2.2 0 0 0-.1.3 47.1 47.1 0 0 0 3.6 5.9.2.2 0 0 0 .2.1 58.6 58.6 0 0 0 17.8-8.9.2.2 0 0 0 .1-.2c1.5-15.3-2.5-28.6-10.5-40.4a.2.2 0 0 0-.1-.1z"/></svg>
+    Discord
+  </a>
+</div>
 
 <!-- HOME -->
 <div id="page-home" class="page active">
@@ -610,8 +717,30 @@ function showPage(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById("page-"+id).classList.add("active");
   document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",(b.getAttribute("onclick")||"").includes("'"+id+"'")));
+  // Sync mobile menu active state
+  document.querySelectorAll(".mobile-menu-btn").forEach(b=>b.classList.remove("active"));
+  const mmBtn=document.getElementById("mm-"+id);
+  if(mmBtn) mmBtn.classList.add("active");
   window.scrollTo(0,0);
 }
+function toggleMobileMenu(){
+  const menu=document.getElementById("mobileMenu");
+  const btn=document.getElementById("navHamburger");
+  menu.classList.toggle("open");
+  btn.classList.toggle("open");
+}
+function closeMobileMenu(){
+  document.getElementById("mobileMenu").classList.remove("open");
+  document.getElementById("navHamburger").classList.remove("open");
+}
+// Close mobile menu on outside click
+document.addEventListener("click",e=>{
+  const menu=document.getElementById("mobileMenu");
+  const btn=document.getElementById("navHamburger");
+  if(menu.classList.contains("open")&&!menu.contains(e.target)&&!btn.contains(e.target)){
+    closeMobileMenu();
+  }
+});
 
 // RANKINGS
 let rankReg="all";
