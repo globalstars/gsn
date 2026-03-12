@@ -148,13 +148,15 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;backg
 .tc-noroster{font-size:.78rem;color:var(--muted);font-style:italic;}
 .tourn-card{background:#fff;border:1px solid var(--bord2);border-radius:6px;overflow:hidden;box-shadow:0 1px 4px rgba(14,26,46,.06);display:grid;grid-template-columns:6px 1fr auto;transition:box-shadow .2s,transform .2s;animation:fadeUp .35s ease both;margin-bottom:1rem;}
 .tourn-card:hover{box-shadow:0 4px 18px rgba(14,26,46,.1);transform:translateY(-2px);}
-.t-sp.past{background:var(--muted);}.t-sp.upcoming{background:var(--red);}
+.t-sp.past{background:var(--muted);}.t-sp.upcoming{background:var(--red);}.t-sp.archived{background:#6b7a8d;}
 .tourn-body{padding:1.2rem 1.7rem;display:flex;align-items:center;gap:2.2rem;flex-wrap:wrap;}
 .t-main{flex:1;min-width:180px;}
 .t-status{display:inline-flex;align-items:center;gap:5px;font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.38rem;}
 .t-dot{width:5px;height:5px;border-radius:50%;}
 .ts-past{color:var(--muted);}.ts-past .t-dot{background:var(--muted);}
 .ts-upcoming{color:var(--red);}.ts-upcoming .t-dot{background:var(--red);animation:blink 1.2s infinite;}
+.ts-archived{color:#6b7a8d;}.ts-archived .t-dot{background:#6b7a8d;}
+.tourn-card.archived{opacity:.8;}
 .t-name{font-family:'Barlow Condensed',sans-serif;font-size:1.15rem;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--navy);margin-bottom:.18rem;}
 .t-winner{font-size:.8rem;color:var(--gold);font-weight:600;}
 .t-org{font-size:.8rem;color:var(--muted);}
@@ -577,9 +579,12 @@ function processTournaments(rows){
   DATA.tournaments=Object.values(map).map(t=>{
     const endDate=parseDate(t.dateEnd);
     const startDate=parseDate(t.dateStart);
-    const refDate=endDate||startDate;
-    const st=refDate&&!isNaN(refDate)&&refDate<today?"past":"upcoming";
+    // completed = a winner is designated OR date is past
+    // upcoming = no winner and date is in the future
     const w=t.results.find(r=>r.place==="1"||r.place==="1st"||r.place==="1er");
+    const refDate=endDate||startDate;
+    const datePast=refDate&&!isNaN(refDate)&&refDate<today;
+    const st=(w||datePast)?"past":"upcoming";
     const dateDisplay=t.dateEnd&&t.dateEnd!==t.dateStart
       ?fmtDate(t.dateStart)+" – "+fmtDate(t.dateEnd)
       :fmtDate(t.dateStart);
@@ -695,9 +700,8 @@ function renderTournaments(){
     document.getElementById("tournList").innerHTML=`<div class="state-box"><div class="state-icon">📋</div><div class="state-title">No tournaments found</div><div class="state-desc">Add rows to the TOURNAMENT_RESULTS sheet to display events here.</div></div>`;
     return;
   }
-  const labels={past:"Completed",upcoming:"Upcoming",ongoing:"Ongoing"};
   const upcoming=DATA.tournaments.filter(t=>t.status==="upcoming");
-  const past=DATA.tournaments.filter(t=>t.status!=="upcoming");
+  const past=DATA.tournaments.filter(t=>t.status==="past");
   let html="";
   if(upcoming.length) html+=`<div class="t-section-head">Upcoming</div>`+upcoming.map(buildCard).join("");
   if(past.length) html+=`<div class="t-section-head">Completed</div>`+past.map(buildCard).join("");
