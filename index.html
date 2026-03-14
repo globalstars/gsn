@@ -1,1043 +1,1295 @@
-/**
- * ═══════════════════════════════════════════════════════════
- *  GSN Bot v5 — renderer.js
- *  DA alignée avec le site : Barlow Condensed, #0d1520,
- *  accents rouge #c8102e, badges région colorés
- * ═══════════════════════════════════════════════════════════
- */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Stars Network — R6 Mobile</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>:root{--red:#c8102e;--red2:#e8253f;--red3:#ff4d65;--gold:#c8922a;--green:#16a34a;--teal:#0e7490}:root,[data-theme="dark"]{--navy:#0e1a2e;--navy2:#162440;--navy3:#1c2f52;--white:#fff;--off:#f5f7fa;--muted:#8898b0;--border:#d0d8e8;--bord2:#e4e8f0;--bg:#f0f3f8;--page-bg:#0d1520;--inner-bg:#0d1520;--inner-card:#111c2d;--inner-card2:#172035;--inner-border:rgba(255,255,255,.07);--inner-border2:rgba(255,255,255,.13);--inner-text:#dde4f0;--inner-text2:rgba(255,255,255,.5);--inner-text3:rgba(255,255,255,.28);--inner-input-bg:rgba(255,255,255,.05);--inner-input-border:rgba(255,255,255,.12);--inner-head-bg:#0e1a2e;--ds-bg:#0f1923;--ds-surface:#141e2d;--ds-surface2:#1a2638;--ds-border:rgba(255,255,255,.07);--ds-border2:rgba(255,255,255,.12);--ds-text:#e8edf5;--ds-text2:rgba(255,255,255,.55);--ds-text3:rgba(255,255,255,.28);--f-bc:'Barlow Condensed',sans-serif;--f-bn:'Bebas Neue',sans-serif;--f-b:'Barlow',sans-serif;}[data-theme="light"] #page-player,[data-theme="light"] #page-player .pp-body,[data-theme="light"] #page-player,[data-theme="light"] #page-player .pp-body,[data-theme="light"] #page-player footer,[data-theme="light"] #page-team-profile,[data-theme="light"] #page-team-profile .tp-body,[data-theme="light"] #page-team-profile footer{background:#f0f3f8}[data-theme="light"] .pp-dot{border-color:#f0f3f8}[data-theme="light"] .pp-dot.join{border-color:#f0f3f8}[data-theme="light"] .pp-badge.leave{background:rgba(0,0,0,.06);color:#5a6a82;border:1px solid rgba(0,0,0,.1)}[data-theme="light"] .tp-mv-badge.leave{background:rgba(0,0,0,.06);color:#5a6a82;border:1px solid rgba(0,0,0,.1)}[data-theme="light"] .tp-sh::after,[data-theme="light"] .pp-sh::after{background:rgba(0,0,0,.1)}[data-theme="light"] .tp-rp-disc,[data-theme="light"] .tp-mv-date,[data-theme="light"] .tp-mv-sub,[data-theme="light"] .tp-res-meta{color:#5a6a82}[data-theme="light"]{--navy:#0e1a2e;--navy2:#162440;--navy3:#1c2f52;--white:#fff;--off:#f5f7fa;--muted:#5a6a82;--border:#c8d4e4;--bord2:#dce6f0;--bg:#f0f3f8;--page-bg:#f0f3f8;--inner-bg:#f0f3f8;--inner-card:#ffffff;--inner-card2:#eef2f8;--inner-border:rgba(0,0,0,.09);--inner-border2:rgba(0,0,0,.16);--inner-text:#1a2540;--inner-text2:#5a6a82;--inner-text3:#8898b0;--inner-input-bg:#fff;--inner-input-border:#c8d4e4;--inner-head-bg:#fff;--ds-bg:#f0f3f8;--ds-surface:#ffffff;--ds-surface2:#eef2f8;--ds-border:rgba(0,0,0,.09);--ds-border2:rgba(0,0,0,.18);--ds-text:#1a2540;--ds-text2:#5a6a82;--ds-text3:#8898b0}*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}html{scrollbar-gutter:stable}body{background:var(--page-bg);color:var(--inner-text);font-family:var(--f-b);overflow-x:hidden;transition:background .25s,color .25s}nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;background:var(--navy);box-shadow:0 2px 16px rgba(14,26,46,.3);display:flex;align-items:center;justify-content:space-between;padding:0 max(2rem,calc(50% - 650px))}nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy2) 0%,var(--red) 30%,#fff 50%,var(--red) 70%,var(--navy2) 100%)}.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer}.nav-logo-img{width:36px;height:36px;object-fit:contain;background:transparent}.nav-name{font-family:var(--f-bn);font-size:1.1rem;letter-spacing:.1em;color:#fff;line-height:1}.nav-name .red{color:var(--red3)}.nav-tagline{font-size:.55rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;font-weight:500;margin-top:2px}.nav-links{display:flex;align-items:stretch;height:64px}.nav-btn{display:flex;align-items:center;padding:0 1.2rem;color:rgba(255,255,255,.55);font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-right:1px solid rgba(255,255,255,.08);cursor:pointer;font-family:inherit;transition:color .15s,background .15s;position:relative}.nav-btn:first-child{border-left:1px solid rgba(255,255,255,.08)}.nav-btn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--red);transform:scaleX(0);transition:transform .2s}.nav-btn:hover{color:#fff;background:rgba(255,255,255,.04)}.nav-btn.active{color:#fff}.nav-btn.active::after{transform:scaleX(1)}.nav-right{display:flex;align-items:center;gap:.5rem;flex-shrink:0}.nav-discord{display:flex;align-items:center;gap:6px;background:#5865F2;color:#fff;padding:.45rem 1rem;border-radius:4px;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;font-family:inherit;transition:background .2s;white-space:nowrap}.nav-discord:hover{background:#4752c4}.nav-theme-btn{background:none;border:none;color:rgba(255,255,255,.42);width:26px;height:26px;font-size:.72rem;cursor:pointer;transition:color .2s;flex-shrink:0;margin-left:.5rem;display:flex;align-items:center;justify-content:center;line-height:1;padding:0}.nav-theme-btn:hover{color:rgba(255,255,255,.8)}:root .nav-theme-btn::before{content:"◑";font-size:.85rem}[data-theme="light"] .nav-theme-btn::before{content:"◑"}.page{display:none;padding-top:64px;min-height:100vh}.page.active{display:block}.hero{background:linear-gradient(155deg,var(--navy) 0%,var(--navy2) 55%,#1a1030 100%);position:relative;overflow:hidden;padding:4.5rem 2rem 0;text-align:center}.hero::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.016) 0,rgba(255,255,255,.016) 1px,transparent 1px,transparent 40px),repeating-linear-gradient(-45deg,rgba(255,255,255,.016) 0,rgba(255,255,255,.016) 1px,transparent 1px,transparent 40px)}.hero::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 25% 50%,rgba(200,16,46,.16) 0%,transparent 55%),radial-gradient(ellipse at 75% 50%,rgba(200,210,240,.06) 0%,transparent 55%)}.hero-inner{position:relative;z-index:1;max-width:860px;margin:0 auto}.hero-logo{width:150px;height:150px;object-fit:contain;margin:0 auto 1.8rem;display:block;animation:logoIn .7s cubic-bezier(.16,1,.3,1) both;filter:drop-shadow(0 0 24px rgba(200,16,46,.4)) drop-shadow(0 4px 20px rgba(0,0,0,.5))}@keyframes logoIn{from{opacity:0;transform:scale(.75) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}.hero-eyebrow{font-family:var(--f-bc);font-size:.7rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--red3);margin-bottom:.9rem;animation:fadeUp .7s .1s both}@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}.hero-title{font-family:'Anton',sans-serif;font-size:clamp(2.8rem,7.5vw,6rem);line-height:.92;letter-spacing:.03em;text-transform:uppercase;color:#fff;animation:fadeUp .7s .15s both;margin-bottom:.5rem}.hero-title .lr{color:var(--red2)}.hero-divider{display:flex;align-items:center;justify-content:center;gap:12px;margin:1.5rem auto;animation:fadeUp .7s .25s both}.hero-divider span{display:block;height:2px;background:rgba(255,255,255,.15);flex:1;max-width:80px}.hero-divider i{width:10px;height:10px;background:var(--red);transform:rotate(45deg);display:block;flex-shrink:0}.hero-desc{font-size:1rem;line-height:1.7;color:rgba(255,255,255,.62);font-weight:300;max-width:540px;margin:0 auto 2.2rem;animation:fadeUp .7s .3s both}.hero-desc strong{color:rgba(255,255,255,.9);font-weight:600}.hero-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s .35s both;margin-bottom:3rem}.btn-ph{background:var(--red);color:#fff;padding:.72rem 1.8rem;font-family:var(--f-bc);font-size:.83rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:background .2s,transform .15s;border-radius:3px;display:inline-block}.btn-ph:hover{background:var(--red2);transform:translateY(-2px)}.btn-gh{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.25);padding:.72rem 1.8rem;font-family:var(--f-bc);font-size:.83rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .2s;border-radius:3px;display:inline-block}.btn-gh:hover{border-color:#fff;color:#fff}.stats-strip{background:rgba(255,255,255,.07);border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:center;animation:fadeUp .7s .4s both}.stat-cell{flex:1;max-width:220px;padding:1.4rem 1rem;text-align:center;border-right:1px solid rgba(255,255,255,.08)}.stat-cell:last-child{border-right:none}.stat-num{font-family:var(--f-bn);font-size:2.1rem;letter-spacing:.05em;color:#fff;display:block}.stat-lbl{font-size:.62rem;letter-spacing:.15em;color:rgba(255,255,255,.42);text-transform:uppercase;margin-top:2px}.features-section{padding:3.5rem 2rem;max-width:1300px;margin:0 auto}.section-label{font-family:var(--f-bc);font-size:.68rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--red);margin-bottom:.5rem}.section-title{font-family:var(--f-bn);font-size:1.9rem;letter-spacing:.06em;color:var(--inner-text);margin-bottom:2rem}.features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem}.feat-card{background:var(--inner-card);border:1px solid var(--inner-border);border-radius:6px;padding:1.6rem 1.3rem;cursor:pointer;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden}.feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--inner-border);transition:background .2s}.feat-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(0,0,0,.2)}.feat-card:hover::before{background:var(--red)}.feat-icon{font-size:1.7rem;margin-bottom:.8rem;display:block}.feat-title{font-family:var(--f-bc);font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--inner-text);margin-bottom:.45rem}.feat-desc{font-size:.8rem;line-height:1.55;color:var(--inner-text2)}.feat-link{display:inline-flex;align-items:center;gap:5px;margin-top:.7rem;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--red)}.discord-block{background:var(--navy);border-radius:8px;padding:2rem 2.8rem;display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap;max-width:1300px;margin:2rem auto 0}.disc-left{flex:1;min-width:240px}.disc-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(88,101,242,.2);border:1px solid rgba(88,101,242,.4);padding:.28rem .75rem;border-radius:20px;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a0aaff;margin-bottom:.9rem}.disc-title{font-family:var(--f-bn);font-size:1.7rem;letter-spacing:.05em;color:#fff;margin-bottom:.5rem}.disc-desc{font-size:.88rem;line-height:1.65;color:rgba(255,255,255,.52);font-weight:300}.disc-desc strong{color:rgba(255,255,255,.85);font-weight:600}.disc-pills{display:flex;gap:.55rem;flex-wrap:wrap;margin-top:1rem}.disc-pill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:.28rem .7rem;border-radius:20px;font-size:.67rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.58)}.btn-disc{background:#5865F2;color:#fff;padding:.85rem 1.8rem;border-radius:4px;font-family:var(--f-b);font-size:.83rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:background .2s;display:inline-block;white-space:nowrap}.btn-disc:hover{background:#4752c4}.inner-page{max-width:1300px;margin:0 auto;padding:2.5rem 2rem}.page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2rem;padding-bottom:1.1rem;border-bottom:2px solid var(--inner-border);position:relative}.page-header::after{content:'';position:absolute;bottom:-2px;left:0;width:60px;height:2px;background:var(--red)}.page-h1{font-family:var(--f-bn);font-size:1.9rem;letter-spacing:.08em;text-transform:uppercase;color:var(--inner-text)}.page-h1 .red{color:var(--red)}.page-sub{font-size:.7rem;letter-spacing:.15em;color:var(--inner-text2);text-transform:uppercase;font-weight:600;margin-top:4px;display:block}.page-count{font-family:var(--f-bc);font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--inner-text2);border:1px solid var(--inner-border2);padding:.28rem .75rem;border-radius:3px;background:var(--inner-card)}.state-box{background:var(--inner-card);border:1px solid var(--inner-border);border-radius:6px;padding:3rem;text-align:center}.state-icon{font-size:2rem;margin-bottom:.8rem}.state-title{font-family:var(--f-bc);font-size:1.05rem;font-weight:700;color:var(--inner-text);margin-bottom:.35rem;letter-spacing:.03em}.state-desc{font-size:.82rem;color:var(--inner-text2);line-height:1.55}.spinner{width:32px;height:32px;border:3px solid var(--inner-border);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem}@keyframes spin{to{transform:rotate(360deg)}}.sync-bar{display:flex;align-items:center;gap:8px;background:var(--inner-card);border:1px solid var(--inner-border);border-radius:4px;padding:.5rem 1rem;margin-bottom:1.4rem;font-size:.7rem;color:var(--inner-text2);width:fit-content}.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;flex-shrink:0}.sync-dot.loading{background:var(--gold);animation:spin2 1s linear infinite;border-radius:0;width:8px;height:8px;border:2px solid var(--gold);border-top-color:transparent}.sync-dot.err{background:var(--red);animation:none}@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}@keyframes spin2{to{transform:rotate(360deg)}}.ctrl-row{display:flex;gap:.55rem;margin-bottom:1.4rem;flex-wrap:wrap}.ctrl-input{flex:1;min-width:200px;background:var(--inner-input-bg);border:1px solid var(--inner-input-border);border-radius:3px;padding:.58rem 1rem;color:var(--inner-text);font-family:var(--f-b);font-size:.88rem;outline:none;transition:border-color .2s}.ctrl-input:focus{border-color:var(--red)}.ctrl-input::placeholder{color:var(--inner-text3)}.ctrl-f{background:var(--inner-card);border:1px solid var(--inner-border2);color:var(--inner-text2);padding:.52rem .95rem;border-radius:3px;cursor:pointer;font-family:var(--f-bc);font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:all .15s}.ctrl-f:hover{border-color:var(--red);color:var(--inner-text)}.ctrl-f.on{background:var(--navy);border-color:var(--navy);color:#fff}.rank-table{width:100%;border-collapse:collapse;background:var(--inner-card);border:1px solid var(--inner-border);border-radius:6px;overflow:hidden}.rank-table thead{background:var(--navy)}.rank-table th{font-family:var(--f-bc);font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.52);padding:.85rem 1rem;text-align:left}.rank-table th:first-child{width:56px;text-align:center}.rank-table tbody tr{border-bottom:1px solid var(--inner-border);transition:background .1s}.rank-table tbody tr:last-child{border-bottom:none}.rank-table tbody tr:hover{background:var(--inner-card2)}.rank-table td{padding:.85rem 1rem}.rank-table td:first-child{text-align:center}.rk-num{font-family:var(--f-bn);font-size:1.35rem;letter-spacing:.05em;color:var(--inner-text2);line-height:1}.rk-num.g{color:var(--gold)}.rk-num.s{color:#8a96a8}.rk-num.b{color:#a07850}.rk-team{font-family:var(--f-bc);font-size:.98rem;font-weight:700;color:var(--inner-text);letter-spacing:.02em}.rk-team-link:hover{color:var(--red)!important}.reg-tag{display:inline-block;font-size:.58rem;font-weight:700;letter-spacing:.1em;padding:.12rem .42rem;border-radius:2px;margin-left:8px;text-transform:uppercase;vertical-align:middle}.reg-EU{background:rgba(51,85,204,.15);color:#6688ee}.reg-NA{background:rgba(204,85,0,.15);color:#dd7733}.reg-SA{background:rgba(0,119,68,.15);color:#33aa77}.reg-AM{background:rgba(136,85,0,.15);color:#cc9944}[data-theme="light"] .reg-EU{background:#e8eeff;color:#3355cc}[data-theme="light"] .reg-NA{background:#fff0e8;color:#cc5500}[data-theme="light"] .reg-SA{background:#e8fff0;color:#007744}[data-theme="light"] .reg-AM{background:#fff8e0;color:#885500}.prize-tag{display:inline-block;background:rgba(200,146,42,.12);color:var(--gold);border:1px solid rgba(200,146,42,.25);font-size:.62rem;font-weight:700;letter-spacing:.08em;padding:.1rem .4rem;border-radius:3px;margin-left:6px;vertical-align:middle}.bar-wrap{display:flex;align-items:center;gap:8px}.bar-bg{flex:1;height:4px;background:var(--inner-border2);border-radius:2px;max-width:120px}.bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--navy3),var(--red))}.bar-val{font-size:.78rem;font-weight:600;color:var(--inner-text2)}.teams-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:1.2rem}.team-card{background:var(--inner-card);border:1px solid var(--inner-border);border-radius:6px;overflow:hidden;transition:transform .2s,box-shadow .2s;animation:fadeUp .35s ease both}.team-card:hover{transform:translateY(-3px);box-shadow:0 6px 22px rgba(0,0,0,.18)}.tc-head{background:var(--navy);padding:.95rem 1.15rem;display:flex;align-items:center;gap:11px;position:relative;overflow:hidden}.tc-head::after{content:'';position:absolute;top:-20px;right:-20px;width:55px;height:55px;background:rgba(200,16,46,.28);transform:rotate(45deg)}.tc-info{flex:1;min-width:0;position:relative;z-index:1}.tc-name{font-family:var(--f-bc);font-size:1.1rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tc-meta{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap}.tc-region{font-size:.56rem;font-weight:700;letter-spacing:.1em;padding:.1rem .38rem;border-radius:2px;text-transform:uppercase;background:rgba(255,255,255,.14);color:rgba(255,255,255,.78)}.tc-rank{font-size:.56rem;font-weight:700;letter-spacing:.08em;padding:.1rem .38rem;border-radius:2px;text-transform:uppercase;background:rgba(200,146,42,.22);color:var(--gold);border:1px solid rgba(200,146,42,.28)}.tc-unranked{font-size:.56rem;font-weight:600;letter-spacing:.08em;color:rgba(255,255,255,.32)}.tc-prize{font-size:.56rem;font-weight:700;letter-spacing:.08em;padding:.1rem .38rem;border-radius:2px;text-transform:uppercase;background:rgba(200,146,42,.15);color:var(--gold)}.tc-logo{width:38px;height:38px;object-fit:contain;border-radius:5px;background:rgba(255,255,255,.05);flex-shrink:0;position:relative;z-index:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}.tc-logo-fb{width:38px;height:38px;border-radius:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-family:var(--f-bn);font-size:.95rem;color:rgba(255,255,255,.55);flex-shrink:0;position:relative;z-index:1}.tc-body{padding:.85rem 1.15rem}.tc-rh{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--inner-text2);margin-bottom:.55rem}.tc-player{display:flex;align-items:center;gap:8px;padding:.28rem 0;border-bottom:1px solid var(--inner-border)}.tc-player:last-child{border:none}.tc-flag{font-size:.82rem;width:18px;text-align:center;flex-shrink:0}.tc-ign{font-size:.85rem;font-weight:600;color:var(--inner-text);flex:1}.tc-disc{font-size:.62rem;color:var(--inner-text2)}.tc-noroster{font-size:.78rem;color:var(--inner-text2);font-style:italic}.tourn-card{background:var(--inner-card);border:1px solid var(--inner-border);border-radius:6px;overflow:hidden;display:grid;grid-template-columns:6px 1fr auto;transition:box-shadow .2s,transform .2s;animation:fadeUp .35s ease both;margin-bottom:1rem}.tourn-card:hover{box-shadow:0 4px 18px rgba(0,0,0,.15);transform:translateY(-2px)}.t-sp.past{background:var(--inner-text2)}.t-sp.upcoming{background:var(--red)}.t-sp.archived{background:#6b7a8d}.tourn-body{padding:1.2rem 1.7rem;display:flex;align-items:center;gap:2.2rem;flex-wrap:wrap}.t-main{flex:1;min-width:180px}.t-status{display:inline-flex;align-items:center;gap:5px;font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.38rem}.t-dot{width:5px;height:5px;border-radius:50%}.ts-past{color:var(--inner-text2)}.ts-past .t-dot{background:var(--inner-text2)}.ts-upcoming{color:var(--red)}.ts-upcoming .t-dot{background:var(--red);animation:blink 1.2s infinite}.ts-archived{color:#6b7a8d}.ts-archived .t-dot{background:#6b7a8d}.tourn-card.archived{opacity:.8}.t-name{font-family:var(--f-bc);font-size:1.15rem;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--inner-text);margin-bottom:.18rem}.t-winner{font-size:.8rem;color:var(--gold);font-weight:600}.t-org{font-size:.8rem;color:var(--inner-text2)}.t-meta{display:flex;gap:1.8rem;align-items:center}.t-mb{text-align:center}.t-mv{font-family:var(--f-bc);font-size:.97rem;font-weight:700;color:var(--inner-text);display:block;letter-spacing:.02em}.t-mv.prize{color:var(--gold)}.t-mk{font-size:.6rem;color:var(--inner-text2);text-transform:uppercase;letter-spacing:.1em}.tourn-action{display:flex;align-items:center;padding:1.2rem 1.4rem;border-left:1px solid var(--inner-border)}.btn-p{background:var(--red);color:#fff;padding:.55rem 1.2rem;border:none;border-radius:3px;font-family:var(--f-bc);font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;transition:background .15s}.btn-p:hover{background:var(--red2)}.btn-o{background:transparent;color:var(--inner-text2);border:1px solid var(--inner-border2);padding:.55rem 1.2rem;border-radius:3px;font-family:var(--f-bc);font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .15s;display:inline-block;text-decoration:none}.t-section-head{font-family:var(--f-bc);font-size:.72rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--inner-text2);margin:1.8rem 0 .75rem;display:flex;align-items:center;gap:10px}.t-section-head::after{content:'';flex:1;height:1px;background:var(--inner-border)}.tracker-grid{display:flex;flex-direction:column;gap:.65rem}.tr-card{background:var(--inner-card);border:1px solid var(--inner-border);border-radius:6px;display:grid;grid-template-columns:5px 1fr;overflow:hidden;transition:box-shadow .2s;animation:fadeUp .3s ease both}.tr-card:hover{box-shadow:0 3px 14px rgba(0,0,0,.15)}.tr-stripe-join{background:var(--green)}.tr-stripe-transfer{background:var(--teal)}.tr-stripe-leave{background:var(--red)}.tr-body{padding:.7rem 1.1rem;display:flex;align-items:center;gap:1rem;flex-wrap:nowrap}.tr-player{min-width:130px}.tr-name{font-family:var(--f-bc);font-size:.98rem;font-weight:700;color:var(--inner-text)}.tr-date{font-size:.65rem;color:var(--inner-text2);margin-top:1px}.tr-move{display:flex;align-items:center;gap:7px;flex:1}.tr-from{font-size:.82rem;color:var(--inner-text2);font-weight:500}.tr-to{font-size:.82rem;font-weight:700;color:var(--inner-text)}.tr-badge{font-size:.58rem;font-weight:700;letter-spacing:.1em;padding:.18rem .5rem;border-radius:20px;text-transform:uppercase;white-space:nowrap;flex-shrink:0}.tr-badge-join{background:rgba(22,163,74,.18);color:#4ade80}.tr-badge-transfer{background:rgba(14,116,144,.2);color:#67e8f9}.tr-badge-leave{background:rgba(200,16,46,.15);color:#ff6680}[data-theme="light"] .tr-badge-join{background:#dcfce7;color:#14532d}[data-theme="light"] .tr-badge-transfer{background:#e0f2fe;color:#0c4a6e}[data-theme="light"] .tr-badge-leave{background:#fee2e2;color:#7f1d1d}
+[data-theme="light"] #footer-home{background:var(--inner-card2);border-top:1px solid var(--inner-border)}footer{background:var(--navy);margin-top:4rem;padding:1.8rem max(2.5rem,calc(50% - 650px));display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}.footer-brand{font-family:var(--f-bn);font-size:.95rem;letter-spacing:.08em;color:#fff}.footer-brand .red{color:var(--red3)}.footer-sub{font-size:.58rem;color:rgba(255,255,255,.28);letter-spacing:.12em;margin-top:2px}.footer-links{display:flex;gap:1.8rem}.footer-links a{text-decoration:none;color:rgba(255,255,255,.42);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;transition:color .15s}.footer-links a:hover{color:#fff}.nav-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:.4rem;margin-left:.5rem}.nav-hamburger span{display:block;width:22px;height:2px;background:rgba(255,255,255,.7);border-radius:2px;transition:all .25s}.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}.nav-hamburger.open span:nth-child(2){opacity:0}.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}.mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;z-index:499;background:var(--navy);border-bottom:2px solid var(--red);flex-direction:column;padding:.5rem 0}.mobile-menu.open{display:flex}.mobile-menu-btn{background:none;border:none;color:rgba(255,255,255,.7);font-family:var(--f-bc);font-size:.9rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.9rem 1.6rem;text-align:left;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06);transition:color .15s,background .15s}.mobile-menu-btn:hover,.mobile-menu-btn.active{color:#fff;background:rgba(255,255,255,.05)}.mobile-menu-btn.active{border-left:3px solid var(--red)}.mobile-menu-discord{display:flex;align-items:center;gap:8px;background:#5865F2;color:#fff;padding:.9rem 1.6rem;font-family:var(--f-bc);font-size:.9rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;margin:.5rem 1rem .5rem;border-radius:4px;justify-content:center}.rank-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:6px}@media(max-width:900px){.features-grid{grid-template-columns:1fr 1fr}nav .nav-links{display:none}nav .nav-discord{display:none}.nav-theme-btn{display:none}.nav-hamburger{display:flex}.tourn-card{grid-template-columns:5px 1fr}.tourn-action{border-left:none;border-top:1px solid var(--inner-border);padding:.7rem 1rem 1rem;flex-direction:row;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-start}.discord-block{flex-direction:column;gap:1.5rem;padding:1.6rem}.inner-page{padding:1.5rem 1rem}.stat-cell{padding:1rem .6rem}}:root{--ds-bg:#0f1923;--ds-surface:#141e2d;--ds-surface2:#1a2638;--ds-border:rgba(255,255,255,.07);--ds-border2:rgba(255,255,255,.12);--ds-text:#e8edf5;--ds-text2:rgba(255,255,255,.55);--ds-text3:rgba(255,255,255,.28)}#page-team-profile{background:var(--ds-bg)}#page-team-profile .tp-body{background:var(--ds-bg);max-width:980px;margin:0 auto;padding:2rem 1.5rem}#page-team-profile .tp-hero{background:linear-gradient(155deg,#0e1a2e 0%,#162440 60%,#1a1030 100%);padding:2rem 1.5rem 0;position:relative;overflow:hidden}.tp-hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.013)0,rgba(255,255,255,.013)1px,transparent 1px,transparent 38px)}.tp-hero::after{content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;background:rgba(200,16,46,.14);transform:rotate(45deg);pointer-events:none}.tp-hero-inner{position:relative;z-index:1;max-width:980px;margin:0 auto}.tp-back{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.5);padding:.35rem .8rem;border-radius:3px;font-family:var(--f-bc);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-bottom:1.1rem}.tp-back:hover{color:#fff;border-color:rgba(255,255,255,.5)}.tp-hero-row{display:flex;align-items:flex-end;gap:1.5rem;flex-wrap:wrap;padding-bottom:0}.tp-badge{width:60px;height:60px;border-radius:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:var(--f-bn);font-size:1.4rem;color:rgba(255,255,255,.8);flex-shrink:0;letter-spacing:.04em}.tp-hero-info{flex:1;min-width:0;padding-bottom:1.4rem}.tp-team-name{font-family:var(--f-bn);font-size:2.6rem;letter-spacing:.05em;color:#fff;line-height:1;margin-bottom:.4rem}.tp-meta-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:.3rem}.tp-pill{font-family:var(--f-bc);font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.17rem .5rem;border-radius:2px}.tp-pill-region{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)}.tp-pill-rank{background:rgba(200,146,42,.2);color:var(--gold);border:1px solid rgba(200,146,42,.3)}.tp-pill-earn{background:rgba(200,146,42,.15);color:var(--gold);border:1px solid rgba(200,146,42,.25)}.tp-pill-dis{background:rgba(200,16,46,.2);color:var(--red3);border:1px solid rgba(200,16,46,.25)}.tp-tabs{display:flex;gap:0;border-top:1px solid rgba(255,255,255,.08);margin-top:1rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}.tp-tabs::-webkit-scrollbar{display:none}.tp-tab{padding:.7rem 1.2rem;font-family:var(--f-bc);font-size:.73rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s;white-space:nowrap;margin-bottom:-1px}.tp-tab:hover{color:rgba(255,255,255,.7)}.tp-tab.active{color:#fff;border-bottom-color:var(--red)}.tp-body{max-width:980px;margin:0 auto;padding:2rem 1.5rem}.tp-panel{display:none}.tp-panel.active{display:block}.tp-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:.7rem;margin-bottom:2rem}.tp-stat{background:var(--ds-surface);border:1px solid var(--ds-border);border-radius:6px;padding:.85rem .9rem;text-align:center}.tp-stat-n{font-family:var(--f-bn);font-size:1.85rem;color:var(--ds-text);line-height:1}.tp-stat-l{font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ds-text2);margin-top:.15rem}.tp-roster{list-style:none;display:flex;flex-direction:column;gap:.45rem;margin-bottom:2rem}.tp-rp{background:var(--ds-surface);border:1px solid var(--ds-border);border-radius:6px;padding:.6rem 1rem;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}.tp-rp:hover{background:var(--ds-surface2);border-color:var(--ds-border2);transform:translateY(-1px)}.tp-rp-flag{font-size:.88rem;width:20px;text-align:center;flex-shrink:0}.tp-rp-name{font-family:var(--f-bc);font-size:.92rem;font-weight:800;color:var(--ds-text);text-transform:uppercase;letter-spacing:.03em;flex:1}.tp-rp-disc{font-size:.68rem;color:var(--ds-text2)}.tp-results{display:flex;flex-direction:column;gap:.55rem;margin-bottom:2rem}.tp-res{background:var(--ds-surface);border:1px solid var(--ds-border);border-radius:6px;padding:.75rem 1.1rem;display:flex;align-items:center;gap:1rem;overflow:hidden}.tp-res-place{font-family:var(--f-bn);font-size:1.5rem;line-height:1;width:38px;text-align:center;flex-shrink:0}.tp-res-place.gold{color:var(--gold)}.tp-res-place.silver{color:#8a96a8}.tp-res-place.bronze{color:#b87333}.tp-res-place.other{color:var(--ds-text2);font-size:1.1rem}.tp-res-info{flex:1;min-width:0}.tp-res-name{font-family:var(--f-bc);font-size:.95rem;font-weight:800;text-transform:uppercase;color:var(--ds-text);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tp-res-meta{font-size:.7rem;color:var(--ds-text2);margin-top:2px}.tp-res-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}.tp-res-prize{font-size:.72rem;font-weight:700;color:var(--gold)}.tp-res-lp{font-size:.62rem;font-weight:700;padding:.18rem .5rem;border-radius:2px;background:#16a34a;color:#fff;text-decoration:none;white-space:nowrap}.tp-moves{display:flex;flex-direction:column;gap:.45rem}.tp-mv{background:var(--ds-surface);border:1px solid var(--ds-border);border-radius:6px;padding:.6rem 1rem;display:grid;grid-template-columns:72px 1fr auto;align-items:center;gap:.8rem}.tp-mv-date{font-size:.67rem;font-weight:700;color:var(--ds-text2);white-space:nowrap}.tp-mv-player{font-family:var(--f-bc);font-size:.88rem;font-weight:800;color:var(--ds-text);text-transform:uppercase;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}.tp-mv-sub{font-size:.7rem;color:var(--ds-text2);margin-top:2px}.tp-mv-badge{font-size:.58rem;font-weight:700;letter-spacing:.07em;padding:.15rem .4rem;border-radius:2px;text-transform:uppercase;white-space:nowrap}.tp-mv-badge.join{background:rgba(22,163,74,.15);color:#4ade80;border:1px solid rgba(22,163,74,.25)}.tp-mv-badge.leave{background:rgba(255,255,255,.06);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.1)}.tp-stat-tabs{display:flex;gap:0;border-bottom:1px solid var(--ds-border);margin-bottom:1.8rem;overflow-x:auto;scrollbar-width:none}.tp-stat-tabs::-webkit-scrollbar{display:none}.tp-stab{padding:.55rem 1.1rem;font-family:var(--f-bc);font-size:.73rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ds-text2);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s;white-space:nowrap;margin-bottom:-1px}.tp-stab:hover{color:var(--ds-text)}.tp-stab.active{color:var(--ds-text);border-bottom-color:var(--red)}.tp-stab-panel{display:none}.tp-stab-panel.active{display:block}.stat-chart-wrap{background:var(--ds-surface);border:1px solid var(--ds-border);border-radius:8px;padding:1.5rem 1.2rem;overflow-x:auto}.stat-chart-title{font-family:var(--f-bc);font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ds-text2);margin-bottom:1.2rem}.gantt-svg{display:block;width:100%;min-width:460px}.bar-chart-svg{display:block;width:100%;min-width:320px}#page-player{background:var(--ds-bg)}#page-player .pp-body{background:var(--ds-bg)}.page-footer{background:var(--ds-bg);border-top:1px solid var(--ds-border)}.page-footer>div{max-width:980px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}.pp-hero{background:linear-gradient(155deg,#0e1a2e 0%,#162440 60%,#1a1030 100%);padding:2rem 1.5rem 2rem;position:relative;overflow:hidden}.pp-hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.012)0,rgba(255,255,255,.012)1px,transparent 1px,transparent 40px)}.pp-back{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.5);padding:.38rem .85rem;border-radius:3px;font-family:var(--f-bc);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-bottom:1.2rem}.pp-back:hover{color:#fff;border-color:rgba(255,255,255,.5)}.pp-hero-row{position:relative;z-index:1;max-width:860px;margin:0 auto;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}.pp-avatar{width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:rgba(255,255,255,.3);flex-shrink:0;overflow:hidden;font-family:var(--f-bn);letter-spacing:.04em}.pp-info{flex:1;min-width:0}.pp-name{font-family:var(--f-bn);font-size:2.3rem;letter-spacing:.06em;color:#fff;line-height:1}.pp-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:.45rem}.pp-team-badge{font-family:var(--f-bc);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;border-radius:3px;background:rgba(200,16,46,.2);color:var(--red3);border:1px solid rgba(200,16,46,.28)}.pp-team-badge.fa{background:rgba(22,163,74,.18);color:#4ade80;border-color:rgba(22,163,74,.28)}.pp-discord{font-size:.73rem;color:rgba(255,255,255,.38)}.pp-bio{margin-top:.65rem;font-style:italic;font-size:.82rem;color:rgba(255,255,255,.55);max-width:520px;line-height:1.5}.pp-role-pill{font-family:var(--f-bc);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.18rem .55rem;border-radius:3px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.12)}.pp-status-pill{font-family:var(--f-bc);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.18rem .55rem;border-radius:3px}.pp-status-active{background:rgba(22,163,74,.15);color:#4ade80;border:1px solid rgba(22,163,74,.28)}.pp-status-semi{background:rgba(234,179,8,.1);color:#fbbf24;border:1px solid rgba(234,179,8,.22)}.pp-status-ret{background:rgba(255,255,255,.06);color:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.1)}.pp-lft-pill{font-family:var(--f-bc);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.18rem .55rem;border-radius:3px;background:rgba(22,163,74,.18);color:#4ade80;border:1px solid rgba(22,163,74,.35)}.pp-socials{display:flex;flex-direction:column;gap:6px;margin-bottom:1.8rem}.pp-social-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--ds-border);border-radius:6px;padding:.45rem .85rem;text-decoration:none;transition:background .18s}.pp-social-row:hover{background:rgba(255,255,255,.08)}.pp-social-icon{font-size:1rem;width:22px;text-align:center;flex-shrink:0}.pp-social-label{font-family:var(--f-bc);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ds-text2);width:80px;flex-shrink:0}.pp-social-val{font-size:.82rem;font-weight:600;color:var(--ds-text)}.pp-body{max-width:860px;margin:0 auto;padding:2rem 1.5rem}.pp-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.7rem;margin-bottom:2rem}.pp-stat{background:var(--ds-surface);border:1px solid var(--ds-border);border-radius:6px;padding:.9rem 1rem;text-align:center}.pp-stat-n{font-family:var(--f-bn);font-size:1.9rem;color:var(--ds-text);line-height:1}.pp-stat-l{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ds-text2);margin-top:.15rem}.pp-sh,.tp-sh{font-family:var(--f-bc);font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ds-text2);display:flex;align-items:center;gap:10px;margin:1.5rem 0 .8rem}.pp-sh::after,.tp-sh::after{content:'';flex:1;height:1px;background:var(--ds-border)}.pp-timeline{position:relative;padding-left:26px}.pp-timeline::before{content:'';position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:linear-gradient(to bottom,var(--red),rgba(200,16,46,.08))}.pp-item{position:relative;margin-bottom:.9rem}.pp-dot{position:absolute;left:-22px;top:13px;width:9px;height:9px;border-radius:50%;background:var(--red);border:2px solid var(--ds-surface);box-shadow:0 0 0 2px rgba(200,16,46,.35)}.pp-dot.join{background:#22c55e;box-shadow:0 0 0 2px rgba(22,163,74,.35)}.pp-dot.fa{background:rgba(255,255,255,.25);box-shadow:0 0 0 2px rgba(255,255,255,.1)}.pp-card{background:var(--ds-surface);border:1px solid var(--ds-border);border-radius:6px;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;transition:background .15s,border-color .15s}.pp-card:hover{background:var(--ds-surface2);border-color:var(--ds-border2)}.pp-card-team{font-family:var(--f-bc);font-size:.95rem;font-weight:800;text-transform:uppercase;color:var(--ds-text)}.pp-card-team.fa{color:var(--ds-text2);font-style:italic}.pp-card-desc{font-size:.75rem;color:var(--ds-text2);margin-top:3px}.pp-card-right{text-align:right;flex-shrink:0}.pp-badge{font-size:.58rem;font-weight:700;letter-spacing:.08em;padding:.13rem .42rem;border-radius:2px;text-transform:uppercase}.pp-badge.join{background:rgba(22,163,74,.15);color:#4ade80;border:1px solid rgba(22,163,74,.25)}.pp-badge.leave{background:rgba(255,255,255,.06);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.1)}.pp-badge.transfer{background:rgba(200,16,46,.12);color:var(--red3);border:1px solid rgba(200,16,46,.22)}.pp-card-date{font-size:.67rem;color:var(--ds-text2);margin-top:4px}@media(max-width:600px){nav{padding:0 1rem}.nav-name{font-size:.9rem;white-space:nowrap}.nav-tagline{display:none}.nav-theme-btn{display:none}.nav-right{gap:.25rem}.hero{padding:3rem 1.2rem 0}.hero-logo{width:110px;height:110px;margin-bottom:1.3rem}.hero-title{font-size:clamp(2.2rem,13vw,3.5rem)}.hero-desc{font-size:.88rem;margin-bottom:1.6rem}.hero-ctas{gap:.7rem}.btn-ph,.btn-gh{padding:.6rem 1.3rem;font-size:.78rem}.stats-strip{flex-direction:column}.stat-cell{border-right:none;border-bottom:1px solid rgba(255,255,255,.08);max-width:100%;padding:.9rem 1rem}.stat-cell:last-child{border-bottom:none}.features-section{padding:2.2rem 1.2rem}.features-grid{grid-template-columns:1fr}.feat-card{padding:1.2rem 1rem}.discord-block{padding:1.4rem 1.2rem;margin:0 0 2.5rem;border-radius:6px}.disc-title{font-size:1.4rem}.page-header{flex-direction:column;align-items:flex-start;gap:.6rem;margin-bottom:1.3rem}.page-h1{font-size:1.55rem}.ctrl-row{gap:.4rem;flex-wrap:wrap}.ctrl-f{padding:.45rem .75rem;font-size:.7rem}.ctrl-input{min-width:0;flex:1}#rankWrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.rank-table{min-width:0;width:100%;table-layout:fixed}.rank-table th,.rank-table td{padding:.38rem .2rem;font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rank-table .hide-mobile{display:table-cell}.rank-table th:nth-child(1),.rank-table td:nth-child(1){width:28px}.rank-table th:nth-child(2),.rank-table td:nth-child(2){width:auto}.rank-table th:nth-child(3),.rank-table td:nth-child(3){width:32px;text-align:center}.rank-table th:nth-child(4),.rank-table td:nth-child(4){width:32px;text-align:center}.rank-table th:nth-child(5),.rank-table td:nth-child(5){width:20px;text-align:center}.rank-table th:nth-child(6),.rank-table td:nth-child(6){width:30px;text-align:center}.rank-table th:nth-child(7),.rank-table td:nth-child(7){width:52px;text-align:right}.rk-team-link{max-width:88px;overflow:hidden;text-overflow:ellipsis;display:inline-block;white-space:nowrap;vertical-align:middle}.rk-team-link:hover{color:var(--red)!important}.rank-table th{font-size:0}.rank-table th::after{font-size:.5rem;font-weight:700;letter-spacing:.03em}.rank-table th:nth-child(1)::after{content:"#"}.rank-table th:nth-child(2)::after{content:"ÉQUIPE"}.rank-table th:nth-child(3)::after{content:"PTS"}.rank-table th:nth-child(4)::after{content:"RÉC."}.rank-table th:nth-child(5)::after{content:"T"}.rank-table th:nth-child(6)::after{content:"STAB"}.rank-table th:nth-child(7)::after{content:"NOTE"}.teams-grid{grid-template-columns:1fr}.tourn-card{grid-template-columns:5px 1fr}.tourn-body{padding:.9rem 1rem;gap:1rem}.t-name{font-size:1rem}.t-meta{gap:.6rem;flex-wrap:wrap}.t-mv{font-size:.88rem}.tr-card{margin-bottom:0}.tr-body{padding:.65rem .9rem;gap:.5rem;flex-wrap:wrap;align-items:flex-start}.tr-player{flex:0 0 100%;display:flex;align-items:center;gap:8px}.tr-name{font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}.tr-date{font-size:.6rem}.tr-move{flex:1;min-width:0;flex-wrap:nowrap;overflow:hidden;align-items:center}.tr-from,.tr-to{font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px}.tr-badge{font-size:.58rem;padding:.18rem .45rem;white-space:nowrap;flex-shrink:0;align-self:center}footer{padding:1.4rem 1.2rem;flex-direction:column;align-items:flex-start;gap:.8rem;margin-top:2.5rem}.footer-links{gap:1.2rem;flex-wrap:wrap}.state-box{padding:2rem 1.2rem}.tp-team-name{font-size:2rem}.tp-stats{grid-template-columns:repeat(3,1fr)}.tp-body{padding:1.4rem 1rem}.tp-mv{grid-template-columns:1fr auto;gap:.5rem}.tp-mv-date{display:none}.tp-res{gap:.6rem}.stat-chart-wrap{padding:1rem .7rem;overflow-x:auto}.tp-stat-tabs{margin-bottom:1.2rem}.pp-hero{padding:1.4rem 1rem 1.4rem}.pp-hero-row{gap:1rem}.pp-avatar{width:54px;height:54px;font-size:1.2rem}.pp-name{font-size:1.75rem}.pp-body{background:var(--ds-bg);max-width:860px;margin:0 auto;padding:1.2rem 1rem}.pp-stats{grid-template-columns:repeat(3,1fr);gap:.5rem}.pp-social-label{width:60px}.pp-timeline{padding-left:20px}.pp-card{flex-direction:column;align-items:flex-start;gap:.5rem}.pp-card-right{text-align:left}}</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <img class="nav-logo-img" src="https://raw.githubusercontent.com/globalstars/gsn/571f26a028b8c5b41ef758ae2d775f88804b49d3/image_2026-03-12_005645778-removebg-preview.png" alt="GSN Logo">
+    <div><div class="nav-name">Global <span class="red">Stars</span></div><div class="nav-tagline">R6 Mobile · GSN</div></div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showPage('home')">Home</button>
+    <button class="nav-btn" onclick="showPage('rankings')">Rankings</button>
+    <button class="nav-btn" onclick="showPage('teams')">Teams</button>
+    <button class="nav-btn" onclick="showPage('tournaments')">Tournaments</button>
+    <button class="nav-btn" onclick="showPage('tracker')">Roster Tracker</button>
+  </div>
+  <div class="nav-right">
+    <a href="https://discord.gg/mH2mT66GXK" target="_blank" class="nav-discord" id="nav-discord-link">
+      Discord
+    </a>
+    <button class="nav-theme-btn" id="themeToggle" onclick="toggleTheme()" title="Thème clair/sombre"></button>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
 
-const { createCanvas } = require("@napi-rs/canvas");
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-btn active" id="mm-home" onclick="showPage('home');closeMobileMenu()">🏠 Home</button>
+  <button class="mobile-menu-btn" id="mm-rankings" onclick="showPage('rankings');closeMobileMenu()">🏆 Rankings</button>
+  <button class="mobile-menu-btn" id="mm-teams" onclick="showPage('teams');closeMobileMenu()">🛡️ Teams</button>
+  <button class="mobile-menu-btn" id="mm-tournaments" onclick="showPage('tournaments');closeMobileMenu()">⚔️ Tournaments</button>
+  <button class="mobile-menu-btn" id="mm-tracker" onclick="showPage('tracker');closeMobileMenu()">🔄 Roster Tracker</button>
+  <a href="https://discord.gg/mH2mT66GXK" target="_blank" class="mobile-menu-discord" id="mobile-discord-link">
+    Discord
+  </a>
+</div>
 
-// ── Palette (identique aux CSS vars du site) ─────────────────
-const C = {
-  page   : "#0d1520",
-  navy   : "#0e1a2e",
-  navy2  : "#162440",
-  navy3  : "#1c2f52",
-  card   : "#111c2d",
-  card2  : "#172035",
-  red    : "#c8102e",
-  red2   : "#e8253f",
-  red3   : "#ff4d65",
-  gold   : "#c8922a",
-  silver : "#8a96a8",
-  bronze : "#a07850",
-  green  : "#16a34a",
-  teal   : "#0e7490",
-  white  : "#ffffff",
-  text   : "#dde4f0",
-  text2  : "rgba(255,255,255,0.50)",
-  text3  : "rgba(255,255,255,0.28)",
-  muted  : "#8898b0",
-  border : "rgba(255,255,255,0.07)",
-  disc   : "#5865F2",
-};
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-inner">
+      <img class="hero-logo" src="https://raw.githubusercontent.com/globalstars/gsn/571f26a028b8c5b41ef758ae2d775f88804b49d3/image_2026-03-12_005645778-removebg-preview.png" alt="GSN Logo">
+      <h1 class="hero-title"><span class="lr">Global</span><br>Stars<br>Network</h1>
+      <div class="hero-divider"><span></span><i></i><span></span></div>
+      <p class="hero-desc">The <strong>official hub</strong> for competitive Rainbow Six Mobile. Track teams, follow rankings, discover tournaments — and join our Discord for <strong>esport news, scrims & free agent recruitment</strong>.</p>
+      <div class="hero-ctas">
+        <button class="btn-ph" onclick="showPage('rankings')">View Rankings</button>
+        <button class="btn-gh" onclick="showPage('teams')">Browse Teams</button>
+      </div>
+      <div class="stats-strip">
+        <div class="stat-cell"><span class="stat-num" id="home-teams">—</span><span class="stat-lbl">Registered Teams</span></div>
+        <div class="stat-cell"><span class="stat-num" id="home-players">—</span><span class="stat-lbl">Players</span></div>
+        <div class="stat-cell"><span class="stat-num" id="home-tourns">—</span><span class="stat-lbl">Tournaments</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="discord-block">
+    <div class="disc-left">
+      <div class="disc-badge" id="disc-badge-icon"> Official Discord</div>
+      <div class="disc-title">Join the community</div>
+      <div class="disc-desc">Our Discord is where everything happens. Get the latest <strong>esport news</strong>, find <strong>scrim partners</strong>, or enter the <strong>free agent pool</strong> to get recruited.</div>
+      <div class="disc-pills"><span class="disc-pill">📰 Esport News</span><span class="disc-pill">🤝 Team Scrims</span><span class="disc-pill">🎯 Free Agents</span><span class="disc-pill">🏆 Tournaments</span><span class="disc-pill">📢 Announcements</span></div>
+    </div>
+    <div><a href="https://discord.gg/mH2mT66GXK" target="_blank" class="btn-disc">discord.gg/mH2mT66GXK</a></div>
+  </div>
 
-// ── Region colors (identiques au site) ───────────────────────
-const REGION_COLS = {
-  EU: { bg: "rgba(51,85,204,0.18)",  text: "#6688ee", border: "rgba(51,85,204,0.35)"  },
-  NA: { bg: "rgba(204,85,0,0.18)",   text: "#dd7733", border: "rgba(204,85,0,0.35)"   },
-  SA: { bg: "rgba(0,119,68,0.18)",   text: "#33aa77", border: "rgba(0,119,68,0.35)"   },
-  AM: { bg: "rgba(136,85,0,0.18)",   text: "#cc9944", border: "rgba(136,85,0,0.35)"   },
-};
+  <div class="features-section">
+    <div class="section-label">What you'll find here</div>
+    <div class="section-title">Everything GSN, in one place</div>
+    <div class="features-grid">
+      <div class="feat-card" onclick="showPage('rankings')"><span class="feat-icon">🏆</span><div class="feat-title">Global Rankings</div><div class="feat-desc">Live leaderboard updated automatically every time you edit your sheet.</div><span class="feat-link">View Rankings →</span></div>
+      <div class="feat-card" onclick="showPage('teams')"><span class="feat-icon">🛡️</span><div class="feat-title">Registered Teams</div><div class="feat-desc">All teams with full rosters, nationalities and Discord handles.</div><span class="feat-link">Browse Teams →</span></div>
+      <div class="feat-card" onclick="showPage('tournaments')"><span class="feat-icon">⚔️</span><div class="feat-title">Tournaments</div><div class="feat-desc">Past results and upcoming events — live from your Google Sheet.</div><span class="feat-link">See Schedule →</span></div>
+      <div class="feat-card" onclick="showPage('tracker')"><span class="feat-icon">🔄</span><div class="feat-title">Roster Tracker</div><div class="feat-desc">All player movements — signings, transfers and departures.</div><span class="feat-link">Track Moves →</span></div>
+    </div>
+  </div>
+  <footer id="footer-home"><div><div class="footer-brand">Global <span class="red">Stars</span> Network</div><div class="footer-sub">© 2026 GSN — R6 MOBILE COMPETITIVE</div></div><div class="footer-links"><a href="https://discord.gg/mH2mT66GXK" target="_blank">Discord</a><a href="#" onclick="showPage('rankings')">Rankings</a><a href="#" onclick="showPage('teams')">Teams</a><a href="#" onclick="showPage('tournaments')">Tournaments</a></div></footer>
+</div>
 
-// ── Helpers ───────────────────────────────────────────────────
-function rgba(hex, a) {
-  if (hex.startsWith("rgba")) return hex;
-  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-  return `rgba(${r},${g},${b},${a})`;
+<!-- RANKINGS -->
+<div id="page-rankings" class="page">
+  <div class="inner-page">
+    <div class="page-header">
+      <div><div class="page-h1"><span class="red">Global</span> Rankings</div><span class="page-sub">Auto-Ranking System V2.0 · Live from Google Sheet</span></div>
+      <span class="page-count" id="rank-count">Loading…</span>
+    </div>
+    <div class="ctrl-row">
+      <button class="ctrl-f on" onclick="fRank('all',this)">All Regions</button>
+      <button class="ctrl-f" onclick="fRank('EU',this)">🇪🇺 EU</button>
+      <button class="ctrl-f" onclick="fRank('NA',this)">🌎 NA</button>
+      <button class="ctrl-f" onclick="fRank('SA',this)">🌍 SA</button>
+      
+    </div>
+    <div id="rankWrap"><div class="state-box"><div class="spinner"></div><div class="state-title">Loading rankings…</div><div class="state-desc">Syncing from Google Sheet</div></div></div>
+  </div>
+  <footer class="page-footer"></footer>
+</div>
+
+<!-- TEAMS -->
+<div id="page-teams" class="page">
+  <div class="inner-page">
+    <div class="page-header">
+      <div><div class="page-h1"><span class="red">Registered</span> Teams</div><span class="page-sub" id="teams-sub">Live from Google Sheet</span></div>
+      <span class="page-count" id="teams-count">Loading…</span>
+    </div>
+    <div class="ctrl-row">
+      <input type="text" class="ctrl-input" id="teamSearch" placeholder="Search team or player…" oninput="renderTeams()">
+      <button class="ctrl-f on" onclick="fTeam('all',this)">All</button>
+      <button class="ctrl-f" onclick="fTeam('EU',this)">EU</button>
+      <button class="ctrl-f" onclick="fTeam('NA',this)">NA</button>
+      <button class="ctrl-f" onclick="fTeam('SA',this)">SA</button>
+      
+    </div>
+    <div class="teams-grid" id="teamsGrid"><div class="state-box"><div class="spinner"></div><div class="state-title">Loading teams…</div></div></div>
+  </div>
+  <footer class="page-footer"></footer>
+</div>
+
+<!-- TOURNAMENTS -->
+<div id="page-tournaments" class="page">
+  <div class="inner-page">
+    <div class="page-header">
+      <div><div class="page-h1"><span class="red">Tournaments</span></div><span class="page-sub">GSN Circuit · Live from Google Sheet</span></div>
+      <span class="page-count" id="tourn-count">Loading…</span>
+    </div>
+    <div id="tournList"><div class="state-box"><div class="spinner"></div><div class="state-title">Loading tournaments…</div><div class="state-desc">Syncing from Google Sheet</div></div></div>
+  </div>
+  <footer class="page-footer"></footer>
+</div>
+
+<!-- ROSTER TRACKER -->
+<div id="page-tracker" class="page">
+  <div class="inner-page">
+    <div class="page-header">
+      <div><div class="page-h1"><span class="red">Roster</span> Tracker</div><span class="page-sub">Player movements — live from Google Sheet</span></div>
+      <span class="page-count" id="tracker-count">Loading…</span>
+    </div>
+    <div class="ctrl-row">
+      <input type="text" class="ctrl-input" id="trackerSearch" placeholder="Search player or team…" oninput="renderTracker()">
+      <button class="ctrl-f on" onclick="fTracker('all',this)">All Moves</button>
+      <button class="ctrl-f" onclick="fTracker('join',this)">✅ Signings</button>
+      <button class="ctrl-f" onclick="fTracker('transfer',this)">🔄 Transfers</button>
+      <button class="ctrl-f" onclick="fTracker('leave',this)">❌ Departures</button>
+    </div>
+    <div class="tracker-grid" id="trackerGrid"><div class="state-box"><div class="spinner"></div><div class="state-title">Loading moves…</div></div></div>
+  </div>
+  <footer class="page-footer"></footer>
+</div>
+
+<!-- ═══ PLAYER PROFILE PAGE ═══ -->
+<div id="page-player" class="page">
+  <div class="pp-hero">
+    <div style="position:relative;z-index:1;max-width:860px;margin:0 auto;">
+      <button class="pp-back" id="ppBackBtn">&#8592; Back</button>
+    </div>
+    <div class="pp-hero-row">
+      <div class="pp-avatar" id="ppAvatar"></div>
+      <div class="pp-info">
+        <div class="pp-name" id="ppName"></div>
+        <div class="pp-meta">
+          <span id="ppFlag"></span>
+          <span class="pp-team-badge" id="ppTeam"></span>
+          <span id="ppRolePill"></span>
+          <span id="ppStatusPill"></span>
+          <span id="ppLftPill"></span>
+          <span class="pp-discord" id="ppDiscord"></span>
+        </div>
+        <div id="ppBio" class="pp-bio" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+  <div class="pp-body">
+    <div class="pp-stats" id="ppStats"></div>
+    <div id="ppSocialsSection" style="display:none">
+      <div class="pp-sh">Réseaux sociaux</div>
+      <div class="pp-socials" id="ppSocials"></div>
+    </div>
+    <div class="pp-sh">Career History</div>
+    <div class="pp-timeline" id="ppTimeline"></div>
+  </div>
+  <footer class="page-footer"></footer>
+</div>
+
+<!-- ═══ TEAM PROFILE PAGE ═══ -->
+<div id="page-team-profile" class="page">
+  <div class="tp-hero">
+    <div class="tp-hero-inner">
+      <button class="tp-back" id="tpBackBtn">&#8592; Back</button>
+      <div class="tp-hero-row">
+        <div class="tp-badge" id="tpBadge"></div>
+        <div class="tp-hero-info">
+          <div class="tp-team-name" id="tpName"></div>
+          <div class="tp-meta-row" id="tpMeta"></div>
+        </div>
+      </div>
+      <div class="tp-tabs">
+        <button class="tp-tab active" data-panel="tp-overview">Overview</button>
+        <button class="tp-tab" data-panel="tp-roster">Roster</button>
+        <button class="tp-tab" data-panel="tp-results">Results</button>
+        <button class="tp-tab" data-panel="tp-transfers">Transfers</button>
+        <button class="tp-tab" data-panel="tp-statistics">Statistics</button>
+      </div>
+    </div>
+  </div>
+  <div class="tp-body">
+    <div id="tp-overview" class="tp-panel active">
+      <div class="tp-stats" id="tpStats"></div>
+      <div class="tp-sh">Active Roster</div>
+      <ul class="tp-roster" id="tpRosterOv"></ul>
+      <div class="tp-sh">Recent Results</div>
+      <div class="tp-results" id="tpRecentRes"></div>
+    </div>
+    <div id="tp-roster" class="tp-panel">
+      <div class="tp-sh">Active Roster</div>
+      <ul class="tp-roster" id="tpRosterFull"></ul>
+    </div>
+    <div id="tp-results" class="tp-panel">
+      <div class="tp-sh">All Tournament Results</div>
+      <div class="tp-results" id="tpAllRes"></div>
+    </div>
+    <div id="tp-transfers" class="tp-panel">
+      <div class="tp-sh">Transfer History</div>
+      <div class="tp-moves" id="tpMoves"></div>
+    </div>
+    <div id="tp-statistics" class="tp-panel">
+      <div class="tp-stat-tabs">
+        <button class="tp-stab active" data-stab="timeline">📈 Team Timeline</button>
+        <button class="tp-stab" data-stab="earnings">💰 Earnings</button>
+        <button class="tp-stab" data-stab="all">Show All</button>
+      </div>
+      <div id="tp-stab-timeline" class="tp-stab-panel active">
+        <div id="tpChartTimeline"></div>
+      </div>
+      <div id="tp-stab-earnings" class="tp-stab-panel">
+        <div id="tpChartEarnings"></div>
+      </div>
+      <div id="tp-stab-all" class="tp-stab-panel">
+        <div id="tpChartTimelineAll"></div>
+        <div style="margin-top:2rem" id="tpChartEarningsAll"></div>
+      </div>
+    </div>
+  </div>
+  <footer class="page-footer"></footer>
+</div>
+
+<script>
+
+const SHEET_ID = "1bzgiooyAniWzuIyUom5kIia31-caI1vloCGJuEB1C20";
+const BASE = "https://opensheet.elk.sh/" + SHEET_ID + "/";
+const URL_TEAMS    = BASE + "TEAMS_DATABASE";
+const URL_PLAYERS  = BASE + "PLAYERS";
+const URL_ROSTER   = BASE + "Roster+Changes";
+const URL_TOURNS   = BASE + "TOURNAMENT_RESULTS";
+const URL_RANKINGS = BASE + "RANKINGS_AUTO";
+
+const FLAGS={RU:"🇷🇺",UK:"🇬🇧",GB:"🇬🇧",IR:"🇮🇷",US:"🇺🇸",IT:"🇮🇹",DE:"🇩🇪",FR:"🇫🇷",BR:"🇧🇷",MX:"🇲🇽",CR:"🇨🇷",EC:"🇪🇨",PA:"🇵🇦",IQ:"🇮🇶",TR:"🇹🇷",CH:"🇨🇭",CA:"🇨🇦",LT:"🇱🇹",CY:"🇨🇾",ES:"🇪🇸",PT:"🇵🇹",BE:"🇧🇪",NL:"🇳🇱",PL:"🇵🇱",SE:"🇸🇪",NO:"🇳🇴",DK:"🇩🇰",FI:"🇫🇮",UA:"🇺🇦",RO:"🇷🇴",CZ:"🇨🇿",GR:"🇬🇷",HU:"🇭🇺",AT:"🇦🇹",AR:"🇦🇷",CO:"🇨🇴",CL:"🇨🇱",PE:"🇵🇪",VE:"🇻🇪",SA:"🇸🇦",AE:"🇦🇪",MA:"🇲🇦",DZ:"🇩🇿",TN:"🇹🇳",JP:"🇯🇵",KR:"🇰🇷",CN:"🇨🇳",AU:"🇦🇺",NZ:"🇳🇿"};
+const DISCORD_HANDLES={"MrBom":"@mrbom","Tora":"@tora5349","TotherSnail":"@dxniel_101","Hopeless":"@hopelessnessshope","Acew":"@realacew","Trackz":"@trackzforog","Seraph":"@love6169","Gaspard":"@gaspardr6m","AKZ":"@AKZ.r6m","Sky":"@skyr6m","KILLZONE":"@killzoner6m","Legend":"@llegend04","Splice":"@splicee8","SZ":"@szistooshort","Exo":"@exo.0121","Tyx":"@tyxsakchaser"};
+const TEAM_ICONS={TEAM_001:"⚡",TEAM_002:"🌊",TEAM_003:"💀",TEAM_004:"👑",TEAM_005:"🤝",TEAM_006:"🛡️",TEAM_007:"🔱",TEAM_008:"🔥",TEAM_009:"⚔️",TEAM_010:"🦁",TEAM_011:"🌀",TEAM_012:"🧠",TEAM_013:"💪",TEAM_014:"🎯",TEAM_015:"☠️",TEAM_016:"🌈",TEAM_017:"🔭"};
+const flag=c=>FLAGS[c]||"🏴";
+const icon=id=>TEAM_ICONS[id]||"🎮";
+const DISCORD_SVG=`<svg width="13" height="10" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.4a.2.2 0 0 0-.2.1 40.7 40.7 0 0 0-1.8 3.7 54 54 0 0 0-16.2 0A37.7 37.7 0 0 0 25.6.5a.2.2 0 0 0-.2-.1A58.4 58.4 0 0 0 10.9 4.9a.2.2 0 0 0-.1.1C1.6 18.7-.9 32.1.3 45.4a.2.2 0 0 0 .1.2 58.8 58.8 0 0 0 17.7 8.9.2.2 0 0 0 .2-.1 42 42 0 0 0 3.6-5.9.2.2 0 0 0-.1-.3 38.7 38.7 0 0 1-5.5-2.6.2.2 0 0 1 0-.4l1.1-.9a.2.2 0 0 1 .2 0c11.6 5.3 24.1 5.3 35.5 0a.2.2 0 0 1 .2 0l1.1.9a.2.2 0 0 1 0 .4 36.1 36.1 0 0 1-5.5 2.6.2.2 0 0 0-.1.3 47.1 47.1 0 0 0 3.6 5.9.2.2 0 0 0 .2.1 58.6 58.6 0 0 0 17.8-8.9.2.2 0 0 0 .1-.2c1.5-15.3-2.5-28.6-10.5-40.4a.2.2 0 0 0-.1-.1z"/></svg>`;
+
+let DATA = { teams:[], players:{}, freeAgents:[], rankings:[], tournaments:[], rosterMoves:[] };
+const _tpSt=(n,l)=>`<div class="tp-stat"><div class="tp-stat-n">${n}</div><div class="tp-stat-l">${l}</div></div>`;
+
+function parseCSV(text){
+  const lines=text.trim().split("\n");
+  const headers=lines[0].split(",").map(h=>h.trim().replace(/^"|"$/g,""));
+  return lines.slice(1).map(line=>{
+  const vals=[];let cur="",inQ=false;
+  for(const c of line){if(c==='"'){inQ=!inQ;}else if(c===","&&!inQ){vals.push(cur.trim());cur="";}else cur+=c;}
+  vals.push(cur.trim());
+  const obj={};headers.forEach((h,i)=>{obj[h]=(vals[i]||"").replace(/^"|"$/g,"");});
+  return obj;
+  }).filter(r=>Object.values(r).some(v=>v));
 }
 
-function roundRect(ctx, x, y, w, h, r) {
-  r = Math.min(r, w/2, h/2);
-  ctx.beginPath();
-  ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.arcTo(x+w,y, x+w,y+r, r);
-  ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w,y+h, x+w-r,y+h, r);
-  ctx.lineTo(x+r, y+h); ctx.arcTo(x,y+h, x,y+h-r, r);
-  ctx.lineTo(x, y+r); ctx.arcTo(x,y, x+r,y, r);
-  ctx.closePath();
+async function fetchJSON(url){
+  const r = await fetch(url);
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  return r.json();
 }
+async function fetchAll(){
+  try{
+  const [rTeams,rPlayers,rRoster,rTourns,rRankings]=await Promise.all([
+   fetchJSON(URL_TEAMS),
+   fetchJSON(URL_PLAYERS),
+   fetchJSON(URL_ROSTER),
+   fetchJSON(URL_TOURNS),
+   fetchJSON(URL_RANKINGS),
+  ]);
+  DATA._rawPlayers = rPlayers;
+  processTeams(rTeams, rPlayers);
+  processRoster(rRoster);
+  processTournaments(rTourns);
+  processRankings(rRankings);
 
-// Fond de page avec grille diagonale et glow rouge (identique site)
-function drawBg(ctx, W, H) {
-  ctx.fillStyle = C.page;
-  ctx.fillRect(0, 0, W, H);
-
-  // Grille diagonale
-  ctx.strokeStyle = "rgba(255,255,255,0.016)";
-  ctx.lineWidth = 1;
-  for (let x = -H; x < W + H; x += 40) {
-    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x+H,H); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x-H,H); ctx.stroke();
+  const FA_VARIANTS = ["free agent", "agent libre", "libre", "libre agent", "free  agent"];
+  const lastTeamMap = {};
+  DATA.rosterMoves.forEach(r => {
+   const player = r.player.toLowerCase();
+   const toFA   = FA_VARIANTS.includes(r.to.toLowerCase());
+   const fromFA = FA_VARIANTS.includes(r.from.toLowerCase());
+   if (toFA && !fromFA && r.from) lastTeamMap[player] = r.from;
+  });
+  DATA.freeAgents = DATA.freeAgents.map(p => ({
+   ...p,
+   previousTeam: lastTeamMap[p.name.toLowerCase()] || "",
+  }));
+  renderAll();
+  }catch(e){
+  console.error("Sheet fetch error:",e);
+  showError(e.message);
   }
-
-  // Glow rouge gauche
-  const glow = ctx.createRadialGradient(W*0.12, H*0.5, 0, W*0.12, H*0.5, W*0.45);
-  glow.addColorStop(0, rgba(C.red, 0.13));
-  glow.addColorStop(1, rgba(C.red, 0));
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, W, H);
 }
 
-// Barre top tricolore (FR flag colors du site)
-function drawTopBar(ctx, W) {
-  const g = ctx.createLinearGradient(0,0,W,0);
-  g.addColorStop(0,   C.navy2);
-  g.addColorStop(0.25, C.red);
-  g.addColorStop(0.5,  "#ffffff");
-  g.addColorStop(0.75, C.red);
-  g.addColorStop(1,   C.navy2);
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, W, 4);
-}
+function processTeams(rows, playerRows){
+  const teamMap={};
+  rows.forEach(r=>{
+  const id=(r["Team ID"]||"").trim();
+  const name=(r["Team Name"]||"").trim();
+  const region=(r["Region"]||"").trim();
+  if(!id||!name)return;
+  const logo=(r["Logo"]||"").trim();if(!teamMap[id]) teamMap[id]={id,name,region,logo,players:[],disband:false};
+  });
 
-// Footer standard
-function drawFooter(ctx, W, H, right = "") {
-  ctx.fillStyle = rgba(C.navy2, 0.9);
-  ctx.fillRect(0, H-28, W, 28);
+  playerRows.forEach(p=>{
+  const name=(p["Username"]||p["username"]||"").trim();
+  const teamName=(p["Current Team"]||p["current team"]||"").trim();
+  const discord=(p["Discord (optional)"]||p["Discord"]||p["discord"]||"").trim();
+  const country=(p["Country (optional)"]||p["Country"]||p["country"]||"").trim();
+  if(!name||!teamName||teamName==="Free Agent"||name==="Username")return;
+  const team=Object.values(teamMap).find(t=>t.name.toLowerCase()===teamName.toLowerCase());
+  if(!team)return;
+  team.players.push({name,discord,flag:flag(country)});
+  });
 
-  ctx.strokeStyle = rgba(C.white, 0.06);
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(0, H-28); ctx.lineTo(W, H-28); ctx.stroke();
-
-  ctx.font = "600 10px sans-serif";
-  ctx.textBaseline = "middle";
-  ctx.fillStyle = rgba(C.muted, 0.5);
-  ctx.textAlign = "left";
-  ctx.fillText("Global Stars Network  ·  R6 Mobile Competitive", 20, H-14);
-  if (right) {
-    ctx.textAlign = "right";
-    ctx.fillText(right, W-20, H-14);
+  Object.values(teamMap).forEach(t=>{
+  const row=rows.find(r=>(r["Team Name"]||"").trim()===t.name);
+  if(row){
+   const pts=parseFloat(row["Total Points"]||row["Tournament Points"]||0);
+   if(pts<=-100) t.disband=true;
   }
-  ctx.textAlign = "left";
-  ctx.textBaseline = "alphabetic";
+  });
+
+  DATA.teams=Object.values(teamMap);
+
+  DATA.freeAgents=playerRows
+  .filter(p=>{
+   const name=(p["Username"]||"").trim();
+   const team=(p["Current Team"]||"").trim();
+   return name && name!=="Username" && (!team||team==="Free Agent");
+  })
+  .map(p=>({
+   name:(p["Username"]||"").trim(),
+   discord:(p["Discord (optional)"]||"").trim(),
+   country:(p["Country (optional)"]||"").trim(),
+   flag:flag((p["Country (optional)"]||"").trim()),
+  }));
+
+  let playerCount=0; DATA.teams.forEach(t=>playerCount+=t.players.length);
+  document.getElementById("home-teams").textContent=DATA.teams.length;
+  document.getElementById("home-players").textContent=playerCount+DATA.freeAgents.length||"—";
 }
 
-// Badge région (style identique site)
-function drawRegionBadge(ctx, region, x, y) {
-  const col = REGION_COLS[region] || { bg: rgba(C.muted,0.1), text: C.muted, border: rgba(C.muted,0.2) };
-  ctx.font = "bold 9px sans-serif";
-  const tw = ctx.measureText(region).width;
-  const pw = tw + 14, ph = 17;
+function processRoster(rows){
+  const fmt=d=>{
+  if(!d)return"";
 
-  roundRect(ctx, x, y - ph/2, pw, ph, 3);
-  ctx.fillStyle = col.bg; ctx.fill();
-  ctx.strokeStyle = col.border; ctx.lineWidth = 1; ctx.stroke();
-
-  ctx.fillStyle = col.text;
-  ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  ctx.fillText(region, x + pw/2, y + 0.5);
-  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
-  return pw;
-}
-
-// Rank badge (or/argent/bronze ou chiffre)
-function drawRankBadge(ctx, rank, cx, cy, size = 16) {
-  const medal = { 1: C.gold, 2: C.silver, 3: C.bronze }[rank];
-  if (medal) {
-    ctx.fillStyle = rgba(medal, 0.15);
-    ctx.beginPath(); ctx.arc(cx, cy, size, 0, Math.PI*2); ctx.fill();
-    ctx.strokeStyle = medal; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.arc(cx, cy, size, 0, Math.PI*2); ctx.stroke();
-    ctx.fillStyle = medal;
-  } else {
-    ctx.fillStyle = rgba(C.muted, 0.50);
+  const parts=d.split("/");
+  if(parts.length===3){
+   const dt=new Date(parts[2],parts[1]-1,parts[0]);
+   if(!isNaN(dt)){const dd=String(dt.getDate()).padStart(2,'0');const mm=String(dt.getMonth()+1).padStart(2,'0');return `${dd}/${mm}/${dt.getFullYear()}`;}
   }
-  ctx.font = `bold ${rank >= 10 ? 11 : 13}px sans-serif`;
-  ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  ctx.fillText(rank, cx, cy + 0.5);
-  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
-}
-
-// Barre rating (gradient navy→red)
-function drawRatingBar(ctx, x, y, val, max, barW = 90, barH = 4) {
-  const fill = Math.min(val / max, 1) * barW;
-  roundRect(ctx, x, y, barW, barH, 2);
-  ctx.fillStyle = rgba(C.white, 0.08); ctx.fill();
-  const g = ctx.createLinearGradient(x, 0, x+barW, 0);
-  g.addColorStop(0, C.navy3); g.addColorStop(1, C.red);
-  ctx.fillStyle = g;
-  roundRect(ctx, x, y, Math.max(fill, 3), barH, 2); ctx.fill();
-}
-
-// Séparateur avec losange central (style site)
-function drawDivider(ctx, x1, x2, y) {
-  ctx.strokeStyle = rgba(C.white, 0.07); ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(x1, y); ctx.lineTo(x2, y); ctx.stroke();
-  const cx = (x1 + x2) / 2;
-  ctx.save(); ctx.translate(cx, y); ctx.rotate(Math.PI/4);
-  ctx.fillStyle = C.red;
-  ctx.fillRect(-3, -3, 6, 6);
-  ctx.restore();
-}
-
-
-// Convertit emoji flag → code ISO (ex: 🇫🇷 → 'FR')
-function emojiToISO(input) {
-  if (!input || typeof input !== 'string') return null;
-  const s = input.trim();
-  // Déjà un code ISO 2 lettres
-  if (/^[A-Z]{2}$/.test(s)) return s;
-  if (/^[a-z]{2}$/.test(s)) return s.toUpperCase();
-  // Emoji flag (2 regional indicator symbols)
-  const points = [...s].map(c => c.codePointAt(0));
-  if (points.length === 2 && points[0] >= 0x1F1E6 && points[1] >= 0x1F1E6) {
-    return String.fromCharCode(points[0] - 0x1F1E6 + 65) +
-           String.fromCharCode(points[1] - 0x1F1E6 + 65);
-  }
-  return null;
-}
-
-// Drapeaux nationaux
-function drawFlag(ctx, code, cx, cy, r) {
-  code = emojiToISO(code) || code || '';
-  if (code === 'GB') code = 'UK'; // alias GB → UK
-  ctx.save();
-  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.clip();
-  const x=cx-r, y=cy-r, w=r*2, h=r*2, t=h/3;
-  const F = {
-    FR:()=>{ ctx.fillStyle='#002395';ctx.fillRect(x,y,w/3,h); ctx.fillStyle='#fff';ctx.fillRect(x+w/3,y,w/3,h); ctx.fillStyle='#ED2939';ctx.fillRect(x+2*w/3,y,w/3,h); },
-    IT:()=>{ ctx.fillStyle='#009246';ctx.fillRect(x,y,w/3,h); ctx.fillStyle='#fff';ctx.fillRect(x+w/3,y,w/3,h); ctx.fillStyle='#CE2B37';ctx.fillRect(x+2*w/3,y,w/3,h); },
-    DE:()=>{ ctx.fillStyle='#000';ctx.fillRect(x,y,w,t); ctx.fillStyle='#DD0000';ctx.fillRect(x,y+t,w,t); ctx.fillStyle='#FFCE00';ctx.fillRect(x,y+2*t,w,t); },
-    RU:()=>{ ctx.fillStyle='#fff';ctx.fillRect(x,y,w,t); ctx.fillStyle='#0039A6';ctx.fillRect(x,y+t,w,t); ctx.fillStyle='#D52B1E';ctx.fillRect(x,y+2*t,w,t); },
-    ES:()=>{ ctx.fillStyle='#c60b1e';ctx.fillRect(x,y,w,h); ctx.fillStyle='#ffc400';ctx.fillRect(x,y+t*0.65,w,t*0.7); },
-    PT:()=>{ ctx.fillStyle='#006600';ctx.fillRect(x,y,w*0.4,h); ctx.fillStyle='#FF0000';ctx.fillRect(x+w*0.4,y,w*0.6,h); },
-    BE:()=>{ ctx.fillStyle='#000';ctx.fillRect(x,y,w/3,h); ctx.fillStyle='#FAE042';ctx.fillRect(x+w/3,y,w/3,h); ctx.fillStyle='#EF3340';ctx.fillRect(x+2*w/3,y,w/3,h); },
-    NL:()=>{ ctx.fillStyle='#AE1C28';ctx.fillRect(x,y,w,t); ctx.fillStyle='#fff';ctx.fillRect(x,y+t,w,t); ctx.fillStyle='#21468B';ctx.fillRect(x,y+2*t,w,t); },
-    IR:()=>{ ctx.fillStyle='#239f40';ctx.fillRect(x,y,w,t); ctx.fillStyle='#fff';ctx.fillRect(x,y+t,w,t); ctx.fillStyle='#DA0000';ctx.fillRect(x,y+2*t,w,t); },
-    PL:()=>{ ctx.fillStyle='#fff';ctx.fillRect(x,y,w,h/2); ctx.fillStyle='#DC143C';ctx.fillRect(x,y+h/2,w,h/2); },
-    LT:()=>{ ctx.fillStyle='#FDB913';ctx.fillRect(x,y,w,t); ctx.fillStyle='#006A44';ctx.fillRect(x,y+t,w,t); ctx.fillStyle='#C1272D';ctx.fillRect(x,y+2*t,w,t); },
-    EC:()=>{ ctx.fillStyle='#FFD100';ctx.fillRect(x,y,w,t); ctx.fillStyle='#003893';ctx.fillRect(x,y+t,w,t); ctx.fillStyle='#CE1126';ctx.fillRect(x,y+2*t,w,t); },
-    IQ:()=>{ ctx.fillStyle='#CE1126';ctx.fillRect(x,y,w,t); ctx.fillStyle='#fff';ctx.fillRect(x,y+t,w,t); ctx.fillStyle='#000';ctx.fillRect(x,y+2*t,w,t); },
-    MX:()=>{ ctx.fillStyle='#006847';ctx.fillRect(x,y,w/3,h); ctx.fillStyle='#fff';ctx.fillRect(x+w/3,y,w/3,h); ctx.fillStyle='#CE1126';ctx.fillRect(x+2*w/3,y,w/3,h); },
-    UK:()=>{ ctx.fillStyle='#012169';ctx.fillRect(x,y,w,h); ctx.fillStyle='#fff';ctx.fillRect(x,cy-h*0.08,w,h*0.16);ctx.fillRect(cx-w*0.08,y,w*0.16,h); ctx.fillStyle='#C8102E';ctx.fillRect(x,cy-h*0.055,w,h*0.11);ctx.fillRect(cx-w*0.055,y,w*0.11,h); },
-    US:()=>{ const sw=h/7;for(let i=0;i<7;i++){ctx.fillStyle=i%2===0?'#B22234':'#fff';ctx.fillRect(x,y+i*sw,w,sw);}ctx.fillStyle='#3C3B6E';ctx.fillRect(x,y,w*0.45,h*0.43); },
-    BR:()=>{ ctx.fillStyle='#009C3B';ctx.fillRect(x,y,w,h); ctx.fillStyle='#FEDD00';ctx.beginPath();ctx.moveTo(cx,cy-h*0.38);ctx.lineTo(cx+w*0.47,cy);ctx.lineTo(cx,cy+h*0.38);ctx.lineTo(cx-w*0.47,cy);ctx.closePath();ctx.fill(); ctx.fillStyle='#002776';ctx.beginPath();ctx.arc(cx,cy,h*0.26,0,Math.PI*2);ctx.fill(); },
-    AR:()=>{ ctx.fillStyle='#74ACDF';ctx.fillRect(x,y,w,t); ctx.fillStyle='#fff';ctx.fillRect(x,y+t,w,t); ctx.fillStyle='#74ACDF';ctx.fillRect(x,y+2*t,w,t); },
-    CO:()=>{ ctx.fillStyle='#FCD116';ctx.fillRect(x,y,w,h/2); ctx.fillStyle='#003893';ctx.fillRect(x,y+h/2,w,h/4); ctx.fillStyle='#CE1126';ctx.fillRect(x,y+h*0.75,w,h/4); },
-    TR:()=>{ ctx.fillStyle='#E30A17';ctx.fillRect(x,y,w,h); ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx-h*0.05,cy,h*0.28,0,Math.PI*2);ctx.fill(); ctx.fillStyle='#E30A17';ctx.beginPath();ctx.arc(cx+h*0.08,cy,h*0.22,0,Math.PI*2);ctx.fill(); },
-    CA:()=>{ ctx.fillStyle='#FF0000';ctx.fillRect(x,y,w/4,h);ctx.fillRect(x+3*w/4,y,w/4,h); ctx.fillStyle='#fff';ctx.fillRect(x+w/4,y,w/2,h); },
-    CH:()=>{ ctx.fillStyle='#FF0000';ctx.fillRect(x,y,w,h); ctx.fillStyle='#fff';ctx.fillRect(cx-w*0.07,cy-h*0.22,w*0.14,h*0.44);ctx.fillRect(cx-w*0.22,cy-h*0.07,w*0.44,h*0.14); },
-    MA:()=>{ ctx.fillStyle='#C1272D';ctx.fillRect(x,y,w,h); },
-    DZ:()=>{ ctx.fillStyle='#006233';ctx.fillRect(x,y,w/2,h); ctx.fillStyle='#fff';ctx.fillRect(x+w/2,y,w/2,h); },
-    TN:()=>{ ctx.fillStyle='#E70013';ctx.fillRect(x,y,w,h); ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx,cy,h*0.3,0,Math.PI*2);ctx.fill(); ctx.fillStyle='#E70013';ctx.beginPath();ctx.arc(cx+h*0.08,cy,h*0.22,0,Math.PI*2);ctx.fill(); },
-    SA:()=>{ ctx.fillStyle='#006C35';ctx.fillRect(x,y,w,h); },
-    AE:()=>{ ctx.fillStyle='#00732F';ctx.fillRect(x,y,w,t); ctx.fillStyle='#fff';ctx.fillRect(x,y+t,w,t); ctx.fillStyle='#000';ctx.fillRect(x,y+2*t,w,t); ctx.fillStyle='#FF0000';ctx.fillRect(x,y,w*0.25,h); },
-    CY:()=>{ ctx.fillStyle='#fff';ctx.fillRect(x,y,w,h); ctx.fillStyle='#d57800';ctx.beginPath();ctx.arc(cx,cy-h*0.05,h*0.28,0,Math.PI*2);ctx.fill(); },
-    CR:()=>{ ctx.fillStyle='#002B7F';ctx.fillRect(x,y,w,t*0.5);ctx.fillStyle='#fff';ctx.fillRect(x,y+t*0.5,w,t*0.5);ctx.fillStyle='#CE1126';ctx.fillRect(x,y+t,w,t);ctx.fillStyle='#fff';ctx.fillRect(x,y+2*t,w,t*0.5);ctx.fillStyle='#002B7F';ctx.fillRect(x,y+2.5*t,w,t*0.5); },
-    PA:()=>{ ctx.fillStyle='#fff';ctx.fillRect(x,y,w/2,h/2);ctx.fillStyle='#005293';ctx.fillRect(x+w/2,y+h/2,w/2,h/2);ctx.fillStyle='#D21034';ctx.fillRect(x+w/2,y,w/2,h/2);ctx.fillStyle='#005293';ctx.fillRect(x,y+h/2,w/2,h/2); },
+  try{const dt=new Date(d);if(!isNaN(dt)){const dd=String(dt.getDate()).padStart(2,'0');const mm=String(dt.getMonth()+1).padStart(2,'0');return `${dd}/${mm}/${dt.getFullYear()}`;}}catch{}
+  return d;
   };
-  (F[code] || (() => { ctx.fillStyle='#2a3a52';ctx.fillRect(x,y,w,h); }))();
-  ctx.restore();
-  ctx.strokeStyle = rgba(C.white, 0.18); ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+  const type=(o,n)=>{
+  const oe=(o||"").trim();const ne=(n||"").trim();
+  if(!oe||oe==="Free Agent")return"join";
+  if(!ne||ne==="Free Agent")return"leave";
+  return"transfer";
+  };
+  DATA.rosterMoves=rows
+  .filter(r=>{
+   const pname=r["Player Name"]||r["player name"]||r["PLAYER NAME"]||"";
+   return pname.trim()&&pname.trim()!=="Player Name";
+  })
+  .map(r=>{
+   const pname=(r["Player Name"]||r["player name"]||"").trim();
+   const oldT=(r["Old Team Name"]||r["old team name"]||"").trim();
+   const newT=(r["New Team Name"]||r["new team name"]||"").trim();
+   const date=r["Date"]||r["date"]||"";
+   return{
+    player:pname,from:oldT||"Free Agent",to:newT||"Free Agent",
+    date:fmt(date),rawDate:date,
+    type:type(oldT,newT),
+   };
+  })
+  .filter(r=>r.player)
+  .sort((a,b)=>{
+   const da=new Date(a.rawDate.split("/").reverse().join("-"));
+   const db=new Date(b.rawDate.split("/").reverse().join("-"));
+   return db-da;
+  });
 }
 
-// Label de section (style site)
-function drawSectionLabel(ctx, text, x, y, W) {
-  ctx.font = "700 9px sans-serif";
-  ctx.fillStyle = rgba(C.muted, 0.55);
-  ctx.textBaseline = "middle";
-  ctx.fillText(text, x, y);
-  const tw = ctx.measureText(text).width;
-  ctx.strokeStyle = rgba(C.white, 0.06); ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(x + tw + 12, y); ctx.lineTo(W - 24, y); ctx.stroke();
-  ctx.textBaseline = "alphabetic";
+function processRankings(rows){
+  DATA.rankings=rows
+  .filter(r=>(r["Team Name"]||"").trim()&&(r["Final Rating"]||"").trim())
+  .filter(r=>(r["Status"]||"").trim()==="Ranked")
+  .map((r,i)=>({
+   rank:parseInt(r["Rank"])||i+1,
+   id:(r["Team ID"]||"").trim(),
+   name:(r["Team Name"]||"").trim(),
+   region:(r["Region"]||"—").trim(),
+   pts:parseFloat(r["Total Points"])||0,
+   recent:parseFloat(r["Recent Points"])||0,
+   tourn:parseInt(r["Tournaments"])||0,
+   stab:parseFloat(r["Stability Score"])||0,
+   rating:parseFloat(r["Final Rating"])||0,
+  }))
+  .sort((a,b)=>b.rating-a.rating)
+  .map((r,i)=>({...r,rank:i+1}));
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  RANKINGS
-// ═══════════════════════════════════════════════════════════════
-function renderRankings(list, regionLabel = "All Regions", page = 0, totalPages = 1) {
-  const W = 760, ROW_H = 52, HEAD = 108, FOOT = 28;
-  const H = HEAD + list.length * ROW_H + FOOT;
-  const canvas = createCanvas(W, H);
-  const ctx    = canvas.getContext("2d");
+function processTournaments(rows){
+  const map={};
 
-  drawBg(ctx, W, H);
-  drawTopBar(ctx, W);
+  DATA.teamEarnings={};
 
-  const maxRating = Math.max(...list.map(r => r.rating), 1);
-
-  // ── En-tête ──────────────────────────────────────────────────
-  // Titre "GLOBAL RANKINGS" style site
-  ctx.font = "900 34px sans-serif";
-  ctx.textBaseline = "top";
-  ctx.fillStyle = C.red;
-  ctx.fillText("GLOBAL", 24, 16);
-  const gw = ctx.measureText("GLOBAL").width;
-  ctx.fillStyle = C.white;
-  ctx.fillText(" RANKINGS", 24 + gw, 16);
-
-  // Underline rouge
-  ctx.fillStyle = C.red;
-  ctx.fillRect(24, 56, 56, 3);
-
-  // Sous-titre
-  ctx.font = "600 10px sans-serif";
-  ctx.fillStyle = rgba(C.muted, 0.65);
-  ctx.fillText(`AUTO-RANKING SYSTEM  ·  ${regionLabel.toUpperCase()}  ·  ${list.length} RANKED`, 24, 68);
-
-  // Badge count (style site)
-  const countLabel = `${list.length} RANKED`;
-  ctx.font = "700 9px sans-serif";
-  const cw = ctx.measureText(countLabel).width + 18;
-  roundRect(ctx, W - cw - 20, 22, cw, 20, 3);
-  ctx.fillStyle = C.card; ctx.fill();
-  ctx.strokeStyle = rgba(C.white, 0.12); ctx.lineWidth = 1; ctx.stroke();
-  ctx.fillStyle = rgba(C.white, 0.55);
-  ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  ctx.fillText(countLabel, W - cw/2 - 20, 32);
-  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
-
-  // ── En-têtes colonnes ────────────────────────────────────────
-  const COL = { rank:44, team:90, region:W-310, tourn:W-230, recent:W-178, rating:W-112 };
-
-  ctx.fillStyle = rgba(C.navy, 0.95);
-  ctx.fillRect(0, HEAD - 26, W, 26);
-  ctx.strokeStyle = rgba(C.white, 0.06); ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(0, HEAD - 26); ctx.lineTo(W, HEAD - 26); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(0, HEAD); ctx.lineTo(W, HEAD); ctx.stroke();
-
-  ctx.font = "700 9px sans-serif";
-  ctx.fillStyle = rgba(C.white, 0.30);
-  ctx.textBaseline = "middle";
-  const headerY = HEAD - 13;
-  [["#", COL.rank],["TEAM", COL.team],["REGION", COL.region],["T.", COL.tourn],["RECENT PTS", COL.recent],["FINAL RATING", COL.rating]]
-    .forEach(([label, x]) => { ctx.textAlign = "left"; ctx.fillText(label, x, headerY); });
-  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
-
-  // ── Lignes ───────────────────────────────────────────────────
-  list.forEach((r, i) => {
-    const y    = HEAD + i * ROW_H;
-    const top3 = r.rank <= 3;
-
-    // Fond alterné
-    ctx.fillStyle = rgba(C.white, i%2===0 ? 0.04 : 0.015);
-    ctx.fillRect(0, y, W, ROW_H);
-
-    // Barre latérale couleur médaille
-    if (top3) {
-      const mc = [C.gold, C.silver, C.bronze][r.rank-1];
-      const sg = ctx.createLinearGradient(0, y, 0, y+ROW_H);
-      sg.addColorStop(0, rgba(mc, 0.9)); sg.addColorStop(1, rgba(mc, 0.25));
-      ctx.fillStyle = sg; ctx.fillRect(0, y, 4, ROW_H);
-    }
-
-    // Rank
-    drawRankBadge(ctx, r.rank, COL.rank, y + ROW_H/2);
-
-    // Team name
-    ctx.font = `${top3 ? "800" : "600"} ${top3 ? 15 : 14}px sans-serif`;
-    ctx.fillStyle = top3 ? C.white : rgba(C.white, 0.80);
-    ctx.textBaseline = "middle";
-    ctx.fillText(r.name, COL.team, y + ROW_H/2);
-
-    // Region badge
-    drawRegionBadge(ctx, r.region, COL.region, y + ROW_H/2);
-
-    // Tournois
-    ctx.font = "500 13px sans-serif";
-    ctx.fillStyle = rgba(C.white, 0.50);
-    ctx.textAlign = "center";
-    ctx.fillText(r.tourn, COL.tourn + 10, y + ROW_H/2);
-
-    // Recent points (vert si positif)
-    ctx.fillStyle = r.recent > 0 ? rgba(C.green, 0.9) : rgba(C.muted, 0.55);
-    ctx.fillText(r.recent > 0 ? `+${r.recent}` : r.recent, COL.recent + 20, y + ROW_H/2);
-    ctx.textAlign = "left";
-
-    // Rating bar + valeur
-    drawRatingBar(ctx, COL.rating, y + ROW_H/2 + 9, r.rating, maxRating, 88, 4);
-    ctx.font = "700 13px sans-serif";
-    ctx.fillStyle = rgba(C.white, 0.82);
-    ctx.textBaseline = "middle";
-    ctx.fillText(r.rating.toFixed(1), COL.rating, y + ROW_H/2 - 1);
-
-    // Séparateur
-    if (i < list.length - 1) {
-      ctx.strokeStyle = rgba(C.white, 0.04); ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(0, y+ROW_H); ctx.lineTo(W, y+ROW_H); ctx.stroke();
-    }
+  rows.forEach(r=>{
+  const metaName=(r["TournamentNAME"]||"").trim();
+  if(!metaName)return;
+  if(!map[metaName]){
+   map[metaName]={
+    name:metaName,
+    dateStart:(r["Date Start"]||"").trim(),
+    dateEnd:(r["Date End"]||"").trim(),
+    region:(r["Region"]||"Global").trim(),
+    prize:(r["Prize"]||"").trim(),
+    link:(r["Register Link"]||"https://discord.gg/mH2mT66GXK").trim(),
+    liquipedia:(r["Liquipedia"]||"").trim(),
+    org:"GSN",
+    results:[],
+   };
+  } else {
+   if(!map[metaName].dateStart&&r["Date Start"]) map[metaName].dateStart=r["Date Start"].trim();
+   if(!map[metaName].dateEnd&&r["Date End"])     map[metaName].dateEnd=r["Date End"].trim();
+   if(!map[metaName].prize&&r["Prize"])           map[metaName].prize=r["Prize"].trim();
+   if(!map[metaName].link&&r["Register Link"])    map[metaName].link=r["Register Link"].trim();
+   if(!map[metaName].liquipedia&&r["Liquipedia"]) map[metaName].liquipedia=r["Liquipedia"].trim();
+  }
   });
 
-  const pageLabel = totalPages > 1 ? `Page ${page + 1} / ${totalPages}  ·  ` : "";
-  drawFooter(ctx, W, H,
-    pageLabel + new Date().toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" }));
-  return canvas.toBuffer("image/png");
+  rows.forEach(r=>{
+  const name=(r["Tournament Name"]||"").trim();
+  if(!name)return;
+
+  if(!map[name]){
+   map[name]={
+    name,
+    dateStart:(r["Date"]||"").trim(),
+    dateEnd:"",
+    region:(r["Region"]||"Global").trim(),
+    prize:"",
+    link:"https://discord.gg/mH2mT66GXK",
+    liquipedia:"",
+    org:"GSN",
+    results:[],
+   };
+  }
+
+  if(!map[name].region||map[name].region==="Global"){
+   const reg=(r["Region"]||"").trim();
+   if(reg) map[name].region=reg;
+  }
+
+  const teamName=(r["Team Name"]||"").trim();
+  const place=(r["Placement"]||"").trim();
+  const prizePerTeam=(r["Prize Per Team"]||"").trim();
+
+  if(teamName){
+   const already=map[name].results.some(x=>x.team===teamName&&x.place===place);
+   if(!already){
+    map[name].results.push({team:teamName,place,pts:parseFloat(r["Points"])||0,prizePerTeam});
+
+    if(prizePerTeam){
+   const num=parseFloat(prizePerTeam.replace(/[^0-9.]/g,""));
+   if(!isNaN(num)&&num>0){
+    DATA.teamEarnings[teamName]=(DATA.teamEarnings[teamName]||0)+num;
+   }
+    }
+   }
+  }
+  });
+
+  const today=new Date();today.setHours(0,0,0,0);
+  const fmtDate=s=>{
+  if(!s)return"";
+
+  const p=s.split("/");
+  if(p.length===3){
+   const d=new Date(p[2],p[0]-1,p[1]);
+   if(!isNaN(d)&&d.getFullYear()>2000){const dd=String(d.getDate()).padStart(2,'0');const mm=String(d.getMonth()+1).padStart(2,'0');return `${dd}/${mm}/${d.getFullYear()}`;}
+  }
+  const d2=new Date(s);
+  if(!isNaN(d2)){const dd=String(d2.getDate()).padStart(2,'0');const mm=String(d2.getMonth()+1).padStart(2,'0');return `${dd}/${mm}/${d2.getFullYear()}`;}
+  return s;
+  };
+  const parseDate=s=>{
+  if(!s)return null;
+  const p=s.split("/");
+  if(p.length===3){const d=new Date(p[2],p[0]-1,p[1]);if(!isNaN(d))return d;}
+  const d=new Date(s);return isNaN(d)?null:d;
+  };
+
+  DATA.tournaments=Object.values(map).map(t=>{
+  const endDate=parseDate(t.dateEnd);
+  const startDate=parseDate(t.dateStart);
+
+  const w=t.results.find(r=>r.place==="1"||r.place==="1st"||r.place==="1er");
+  const refDate=endDate||startDate;
+  const datePast=refDate&&!isNaN(refDate)&&refDate<today;
+  const st=(w||datePast)?"past":"upcoming";
+  const dateDisplay=t.dateEnd&&t.dateEnd!==t.dateStart
+   ?fmtDate(t.dateStart)+" – "+fmtDate(t.dateEnd)
+   :fmtDate(t.dateStart);
+  return{...t,status:st,winner:w?.team||null,dateDisplay};
+  }).sort((a,b)=>(a.status==="upcoming"?0:1)-(b.status==="upcoming"?0:1));
+
+  document.getElementById("home-tourns").textContent=DATA.tournaments.length;
+  document.getElementById("tourn-count").textContent=DATA.tournaments.length+" Events";
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  TEAM
-// ═══════════════════════════════════════════════════════════════
-function renderTeam(team, players, rank) {
-  const W = 620, ROW_H = 44, FOOT = 28;
-  const H = 108 + Math.max(players.length, 1) * ROW_H + FOOT + 8;
-  const canvas = createCanvas(W, H);
-  const ctx    = canvas.getContext("2d");
+function renderAll(){renderRankings();renderTeams();renderTournaments();renderTracker();}
 
-  drawBg(ctx, W, H);
-  drawTopBar(ctx, W);
-
-  // Barre latérale rouge dégradée
-  const barG = ctx.createLinearGradient(0, 4, 0, 80);
-  barG.addColorStop(0, rgba(C.red, 0.7)); barG.addColorStop(1, rgba(C.red, 0));
-  ctx.fillStyle = barG; ctx.fillRect(0, 4, 4, 80);
-
-  // Nom de l'équipe
-  ctx.font = `800 ${team.name.length > 14 ? 28 : 34}px sans-serif`;
-  ctx.fillStyle = team.disbanded ? rgba(C.white, 0.4) : C.white;
-  ctx.textBaseline = "top";
-  ctx.fillText(team.name.toUpperCase(), 24, 14);
-
-  // Underline rouge
-  const nameW = ctx.measureText(team.name.toUpperCase()).width;
-  ctx.fillStyle = C.red;
-  ctx.fillRect(24, team.name.length > 14 ? 50 : 56, Math.min(nameW, W - 48), 3);
-
-  if (team.disbanded) {
-    ctx.font = "700 9px sans-serif";
-    ctx.fillStyle = rgba(C.red, 0.75);
-    ctx.textBaseline = "top";
-    ctx.fillText("DISBANDED", 24, 62);
-  }
-
-  // Pills : région + rang
-  let px = 24;
-  const rw = drawRegionBadge(ctx, team.region, px, 80); px += rw + 8;
-
-  if (rank) {
-    // Badge rang
-    const rankLabel = `#${rank.rank || rank["Rank"] || "—"}`;
-    ctx.font = "700 9px sans-serif";
-    const rlw = ctx.measureText(rankLabel).width + 14;
-    roundRect(ctx, px, 80 - 8, rlw, 17, 3);
-    ctx.fillStyle = rgba(C.gold, 0.15); ctx.fill();
-    ctx.strokeStyle = rgba(C.gold, 0.35); ctx.lineWidth = 1; ctx.stroke();
-    ctx.fillStyle = C.gold;
-    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText(rankLabel, px + rlw/2, 80 + 0.5);
-    ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
-    px += rlw + 8;
-
-    // Rating
-    ctx.font = "600 11px sans-serif";
-    ctx.fillStyle = rgba(C.muted, 0.65);
-    ctx.textBaseline = "middle";
-    const rat = typeof rank.final_rating !== "undefined" ? parseFloat(rank.final_rating) : parseFloat(rank["Final Rating"] || 0);
-    ctx.fillText(`${rat.toFixed(1)} pts`, px, 80);
-  } else {
-    ctx.font = "600 10px sans-serif";
-    ctx.fillStyle = rgba(C.muted, 0.45);
-    ctx.textBaseline = "middle";
-    ctx.fillText("Unranked", px, 80);
-  }
-  ctx.textBaseline = "alphabetic";
-
-  // Séparateur
-  drawDivider(ctx, 24, W - 24, 96);
-
-  // Section roster
-  drawSectionLabel(ctx, `ROSTER  ·  ${players.length} PLAYER${players.length !== 1 ? "S" : ""}`, 24, 112, W);
-
-  if (!players.length) {
-    ctx.font = "italic 12px sans-serif";
-    ctx.fillStyle = rgba(C.muted, 0.45);
-    ctx.textBaseline = "middle";
-    ctx.fillText("Roster unavailable", 28, 136);
-  } else {
-    players.forEach((p, i) => {
-      const y = 122 + i * ROW_H;
-
-      // Fond alterné
-      if (i % 2 === 0) {
-        roundRect(ctx, 0, y, W, ROW_H - 2, 0);
-        ctx.fillStyle = rgba(C.white, 0.035); ctx.fill();
-      }
-
-      // Drapeau
-      drawFlag(ctx, p.country, 38, y + ROW_H/2 - 2, 12);
-
-      // Nom
-      ctx.font = "700 14px sans-serif";
-      ctx.fillStyle = C.white;
-      ctx.textBaseline = "middle";
-      ctx.fillText(p.name, 60, y + ROW_H/2 - 2);
-
-      // Discord
-      if (p.discord) {
-        ctx.font = "500 10px sans-serif";
-        ctx.fillStyle = rgba(C.disc, 0.80);
-        ctx.textAlign = "right";
-        ctx.fillText(p.discord.startsWith("@") ? p.discord : "@" + p.discord, W - 20, y + ROW_H/2 - 2);
-        ctx.textAlign = "left";
-      }
-
-      // Séparateur léger
-      if (i < players.length - 1) {
-        ctx.strokeStyle = rgba(C.white, 0.04); ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(24, y + ROW_H - 2); ctx.lineTo(W - 24, y + ROW_H - 2); ctx.stroke();
-      }
-    });
-  }
-
-  drawFooter(ctx, W, H);
-  return canvas.toBuffer("image/png");
+function showError(msg){
+  const err=`<div class="state-box"><div class="state-icon">⚠️</div><div class="state-title">Erreur de chargement</div><div class="state-desc">${msg}</div></div>`;
+  ["rankWrap","teamsGrid","tournList","trackerGrid"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=err;});
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  TEAM — vue STATS (pour le bouton Stats de /team)
-// ═══════════════════════════════════════════════════════════════
-function renderTeamStats(team, rank, results) {
-  const W = 620, FOOT = 28;
-  const hasResults = results && results.length > 0;
-  const H = 100 + 80 + (hasResults ? 28 + results.length * 44 : 40) + FOOT;
-  const canvas = createCanvas(W, H);
-  const ctx    = canvas.getContext("2d");
+const _pages=()=>document.querySelectorAll(".page");
+const _navBtns=()=>document.querySelectorAll(".nav-btn");
+const _mmBtns=()=>document.querySelectorAll(".mobile-menu-btn");
 
-  drawBg(ctx, W, H);
-  drawTopBar(ctx, W);
+function showPage(id){
+  _pages().forEach(p=>p.classList.remove("active"));
+  document.getElementById("page-"+id).classList.add("active");
+  _navBtns().forEach(b=>b.classList.toggle("active",(b.getAttribute("onclick")||"").includes("'"+id+"'")));
+  _mmBtns().forEach(b=>b.classList.remove("active"));
+  const mmBtn=document.getElementById("mm-"+id);
+  if(mmBtn) mmBtn.classList.add("active");
+  window.scrollTo(0,0);
+}
 
-  // Header
-  const barG = ctx.createLinearGradient(0,4,0,60);
-  barG.addColorStop(0, rgba(C.red,0.7)); barG.addColorStop(1, rgba(C.red,0));
-  ctx.fillStyle = barG; ctx.fillRect(0, 4, 4, 60);
+let _mobileMenu,_hamburgerBtn;
+document.addEventListener("DOMContentLoaded",()=>{
+  _mobileMenu=document.getElementById("mobileMenu");
+  _hamburgerBtn=document.getElementById("navHamburger");
+},{ once:true });
 
-  ctx.font = "800 28px sans-serif";
-  ctx.fillStyle = C.white; ctx.textBaseline = "top";
-  ctx.fillText(team.name.toUpperCase(), 24, 14);
-  ctx.fillStyle = C.red; ctx.fillRect(24, 48, 56, 3);
+function toggleMobileMenu(){
+  const menu=_mobileMenu||document.getElementById("mobileMenu");
+  const btn=_hamburgerBtn||document.getElementById("navHamburger");
+  menu.classList.toggle("open");
+  btn.classList.toggle("open");
+}
+function closeMobileMenu(){
+  (_mobileMenu||document.getElementById("mobileMenu")).classList.remove("open");
+  (_hamburgerBtn||document.getElementById("navHamburger")).classList.remove("open");
+}
 
-  ctx.font = "700 9px sans-serif";
-  ctx.fillStyle = rgba(C.muted, 0.55);
-  ctx.fillText("STATISTICS & RESULTS", 24, 58);
+document.addEventListener("click",e=>{
+  const menu=_mobileMenu||document.getElementById("mobileMenu");
+  const btn=_hamburgerBtn||document.getElementById("navHamburger");
+  if(menu.classList.contains("open")&&!menu.contains(e.target)&&!btn.contains(e.target)){
+  closeMobileMenu();
+  }
+});
 
-  // Stats grid (4 cartes)
-  const stats = [
-    { label: "RANK",         val: rank ? `#${rank.rank || rank["Rank"] || "—"}` : "—",                     color: C.gold   },
-    { label: "FINAL RATING", val: rank ? parseFloat(rank.final_rating||rank["Final Rating"]||rank["final_rating"]||0).toFixed(1) : "—", color: C.red },
-    { label: "TOTAL PTS",    val: rank ? (rank.total_points||rank["Total Points"]||rank["total_points"]||0) : "—",   color: C.white  },
-    { label: "TOURNAMENTS",  val: rank ? (rank.tournaments||rank["Tournaments"]||rank["tournaments"]||0) : "—",    color: C.teal   },
+let rankReg="all";
+function renderRankings(){
+  const data=DATA.rankings;if(!data.length)return;
+  const max=Math.max(...data.map(r=>r.rating),1);
+  const list=rankReg==="all"?data:data.filter(r=>r.region===rankReg);
+  document.getElementById("rank-count").textContent=list.length+" Ranked";
+
+  const pm=DATA.teamEarnings||{};
+  document.getElementById("rankWrap").innerHTML=`<table class="rank-table">
+  <thead><tr><th>#</th><th>Team</th><th>Total Pts</th><th class="hide-mobile">Recent Pts</th><th>Tournaments</th><th class="hide-mobile">Stability</th><th>Final Rating</th></tr></thead>
+  <tbody>${list.map(r=>{
+   const rc=r.rank===1?"g":r.rank===2?"s":r.rank===3?"b":"";
+   const bar=Math.round(r.rating/max*100);
+   const earn=pm[r.name];
+   const pt=earn?`<span class="prize-tag">$${earn}</span>`:"";
+   return`<tr><td><span class="rk-num ${rc}">${r.rank}</span></td><td><span class="rk-team rk-team-link" data-team="${r.name}" style="cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;transition:color .15s;" title="View team profile">${r.name}</span><span class="reg-tag reg-${r.region}">${r.region}</span>${pt}</td><td><span style="font-weight:700">${r.pts}</span></td><td class="hide-mobile" style="font-weight:600">${r.recent}</td><td>${r.tourn}</td><td class="hide-mobile">${r.stab.toFixed(1)}</td><td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${bar}%"></div></div><span class="bar-val">${r.rating.toFixed(1)}</span></div></td></tr>`;
+  }).join("")}</tbody></table>`;
+}
+
+let teamReg="all";
+function renderTeams(){
+  const q=(document.getElementById("teamSearch")||{}).value||"";const s=q.toLowerCase();
+  const ri=name=>DATA.rankings.find(r=>r.name===name)||null;
+
+  const pm=DATA.teamEarnings||{};
+
+  const sorted=[...DATA.teams].filter(t=>!t.disband);
+  const list=sorted.filter(t=>{
+  if(teamReg!=="all"&&t.region!==teamReg)return false;
+  if(s&&!t.name.toLowerCase().includes(s)&&!t.players.some(p=>p.name.toLowerCase().includes(s)))return false;
+  return true;
+  });
+  document.getElementById("teams-count").textContent=list.length+" Teams";
+
+  const faList=DATA.freeAgents.filter(p=>{
+  if(s&&!p.name.toLowerCase().includes(s))return false;
+  if(teamReg!=="all")return false;
+  return true;
+  });
+
+  document.getElementById("teamsGrid").innerHTML=list.map((t,i)=>{
+  const r=ri(t.name);
+  const rb=t.disband
+   ?`<span style="font-size:.56rem;font-weight:700;letter-spacing:.08em;padding:.1rem .38rem;border-radius:2px;text-transform:uppercase;background:rgba(200,16,46,.2);color:var(--red3)">DISBANDED</span>`
+   :r?`<span class="tc-rank">Rank #${r.rank} · ${r.rating.toFixed(1)}</span>`:`<span class="tc-unranked">Unranked</span>`;
+  const earn=pm[t.name];
+  const prz=earn?`<span class="tc-prize">🏆 $${earn}</span>`:"";
+  const rows=t.players.length?t.players.map(p=>{
+   const disc=p.discord?`<span class="tc-disc">${p.discord}</span>`:"";
+   return`<li class="tc-player" data-player="${p.name}" style="cursor:pointer;" title="View profile"><span class="tc-flag">${p.flag||"🏴"}</span><span class="tc-ign" style="text-decoration:underline dotted;text-underline-offset:3px;">${p.name}</span>${disc}</li>`;
+  }).join(""):`<li class="tc-noroster">Roster not available</li>`;
+  const opacity=t.disband?"opacity:.55":"";
+  const lh=t.logo?'<img class="tc-logo" src="'+t.logo+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="tc-logo-fb" style="display:none">'+t.name.slice(0,2).toUpperCase()+'</div>':'<div class="tc-logo-fb">'+t.name.slice(0,2).toUpperCase()+'</div>';
+  
+  return`<div class="team-card" data-team="${t.name}" style="animation-delay:${i*.03}s;${opacity};cursor:pointer;" title="View team profile"><div class="tc-head" style="${t.disband?"filter:grayscale(.4)":""}"><div style="flex-shrink:0;position:relative;z-index:1">${lh}</div><div class="tc-info"><div class="tc-name">${t.name}</div><div class="tc-meta"><span class="tc-region">${t.region}</span>${rb}${prz}</div></div></div><div class="tc-body"><div class="tc-rh">Roster · ${t.players.length} player${t.players.length!==1?"s":""}</div><ul style="list-style:none">${rows}</ul></div></div>`;
+  }).join("") + (faList.length ? `
+  <div style="grid-column:1/-1;margin-top:1.5rem;">
+   <div class="t-section-head">🎯 Free Agents · Available for recruitment</div>
+   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.65rem;margin-top:.75rem;">
+    ${faList.map((p,i)=>`
+   <div class="tr-card" style="animation-delay:${i*.02}s">
+    <div class="tr-stripe-join"></div>
+    <div class="tr-body">
+      <div style="display:flex;align-items:center;gap:8px;flex:1;">
+       <span style="font-size:1rem">${p.flag}</span>
+       <div>
+        <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;">
+          <div class="tr-name" data-player="${p.name}" style="cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;" title="View profile">${p.name}</div>
+          ${p.previousTeam?`<span style="font-size:.68rem;font-weight:600;color:var(--muted);letter-spacing:.02em;">ex-${p.previousTeam}</span>`:""}
+        </div>
+        ${p.discord?`<div class="tr-date">${p.discord}</div>`:""}
+       </div>
+      </div>
+      <span class="tr-badge tr-badge-join">Free Agent</span>
+    </div>
+   </div>`).join("")}
+   </div>
+  </div>` : "");
+}
+
+function renderTournaments(){
+  if(!DATA.tournaments.length){
+  document.getElementById("tournList").innerHTML=`<div class="state-box"><div class="state-icon">📋</div><div class="state-title">No tournaments found</div><div class="state-desc">Add rows to the TOURNAMENT_RESULTS sheet to display events here.</div></div>`;
+  return;
+  }
+  const upcoming=DATA.tournaments.filter(t=>t.status==="upcoming");
+  const past=DATA.tournaments.filter(t=>t.status==="past");
+  let html="";
+  if(upcoming.length) html+=`<div class="t-section-head">Upcoming</div>`+upcoming.map(buildCard).join("");
+  if(past.length) html+=`<div class="t-section-head">Completed</div>`+past.map(buildCard).join("");
+  document.getElementById("tournList").innerHTML=html;
+}
+function buildCard(t,i){
+  const labels={past:"Completed",upcoming:"Upcoming"};
+  const sub=t.winner?`<div class="t-winner">🏆 Winner: ${t.winner}</div>`:`<div class="t-org">${t.org} · ${t.region}</div>`;
+  const act=t.status==="upcoming"?`<a href="${t.link}" target="_blank" class="btn-p">Register</a>`:``;
+  const lp=t.liquipedia?`<a href="${t.liquipedia}" target="_blank" class="btn-o" style="display:inline-flex;align-items:center;gap:5px;font-size:.7rem;background:#16a34a;color:#fff;border-color:#16a34a;"><img src="https://liquipedia.net/commons/extensions/TeamLiquidIntegration/resources/pagelogo/liquipedia_icon.png" style="width:13px;height:13px;object-fit:contain;" onerror="this.style.display='none'">Liquipedia</a>`:``;
+  const prize=t.prize||"—";
+  const dateStr=t.dateDisplay||t.dateStart||t.date||"TBD";
+  return`<div class="tourn-card" style="animation-delay:${i*.08}s"><div class="t-sp ${t.status}"></div><div class="tourn-body"><div class="t-main"><div class="t-status ts-${t.status}"><div class="t-dot"></div>${labels[t.status]||t.status}</div><div class="t-name">${t.name}</div>${sub}</div><div class="t-meta"><div class="t-mb"><span class="t-mv">${dateStr}</span><span class="t-mk">Date</span></div><div class="t-mb"><span class="t-mv">${t.results.length||"—"}</span><span class="t-mk">Teams</span></div><div class="t-mb"><span class="t-mv prize">${prize}</span><span class="t-mk">Prize</span></div></div></div><div class="tourn-action" style="display:flex;flex-direction:column;gap:6px;align-items:stretch;">${act}${lp}</div></div>`;
+}
+
+let trackerFilter="all";
+function renderTracker(){
+  const q=(document.getElementById("trackerSearch")||{}).value||"";const s=q.toLowerCase();
+  const list=DATA.rosterMoves.filter(m=>{
+  if(trackerFilter!=="all"&&m.type!==trackerFilter)return false;
+  if(s&&!m.player.toLowerCase().includes(s)&&!m.to.toLowerCase().includes(s)&&!m.from.toLowerCase().includes(s))return false;
+  return true;
+  });
+  document.getElementById("tracker-count").textContent=list.length+" Moves";
+  if(!list.length){document.getElementById("trackerGrid").innerHTML=`<div class="state-box"><div class="state-icon">🔍</div><div class="state-title">No moves found</div></div>`;return;}
+  const sc={join:"tr-stripe-join",transfer:"tr-stripe-transfer",leave:"tr-stripe-leave"};
+  const bc={join:"tr-badge-join",transfer:"tr-badge-transfer",leave:"tr-badge-leave"};
+  const bl={join:"Signing",transfer:"Transfer",leave:"Departure"};
+  const ar={join:"→",transfer:"⇒",leave:"→"};
+  document.getElementById("trackerGrid").innerHTML=list.map((m,i)=>`<div class="tr-card" style="animation-delay:${Math.min(i,25)*.018}s"><div class="${sc[m.type]}"></div><div class="tr-body"><div class="tr-player"><div class="tr-name" data-player="${m.player}" style="cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;" title="View profile">${m.player}</div><div class="tr-date">${m.date}</div></div><div class="tr-move"><span class="tr-from">${m.from}</span><span style="font-size:.85rem"> ${ar[m.type]} </span><span class="tr-to" style="${m.type==="leave"?"color:var(--muted)":""}">${m.to}</span></div><span class="tr-badge ${bc[m.type]}">${bl[m.type]}</span></div></div>`).join("");
+}
+
+function fRank(reg,btn){rankReg=reg;document.querySelectorAll("#page-rankings .ctrl-f").forEach(b=>b.classList.remove("on"));btn.classList.add("on");renderRankings();}
+function fTeam(reg,btn){teamReg=reg;document.querySelectorAll("#page-teams .ctrl-f").forEach(b=>b.classList.remove("on"));btn.classList.add("on");renderTeams();}
+function fTracker(type,btn){trackerFilter=type;document.querySelectorAll("#page-tracker .ctrl-f").forEach(b=>b.classList.remove("on"));btn.classList.add("on");renderTracker();}
+
+var _profilePrevPage = 'teams';
+
+function _goProfile(pageId) {
+  var cur = document.querySelector('.page.active');
+  _profilePrevPage = cur ? cur.id.replace('page-', '') : 'teams';
+  showPage(pageId);
+  window.scrollTo(0, 0);
+}
+function _profileBack() {
+  showPage(_profilePrevPage);
+  window.scrollTo(0, 0);
+}
+
+document.addEventListener('click', function(e) {
+  var tab = e.target.closest('.tp-tab');
+  if (tab && tab.dataset.panel) {
+  document.querySelectorAll('.tp-tab').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.tp-panel').forEach(function(p){ p.classList.remove('active'); });
+  tab.classList.add('active');
+  var panel = document.getElementById(tab.dataset.panel);
+  if (panel) panel.classList.add('active');
+  return;
+  }
+
+  if (e.target.id === 'ppBackBtn' || e.target.id === 'tpBackBtn') {
+  _profileBack();
+  return;
+  }
+
+  var pp = e.target.closest('[data-player]');
+  if (pp) { openPlayer(pp.dataset.player); return; }
+
+  var tp = e.target.closest('[data-team]');
+  if (tp) { openTeamProfile(tp.dataset.team); return; }
+});
+
+function openPlayer(playerName) {
+  var pRow = (DATA._rawPlayers || []).find(function(p) {
+  return (p['Username'] || '').trim().toLowerCase() === playerName.trim().toLowerCase();
+  });
+  if (!pRow) return;
+
+  var name    = (pRow['Username'] || '').trim();
+  var discord = (pRow['Discord (optional)'] || '').trim();
+  var country = (pRow['Country (optional)'] || '').trim();
+  var team    = (pRow['Current Team'] || '').trim();
+  var bio     = (pRow['Bio'] || '').trim();
+  var role    = (pRow['Role'] || '').trim();
+  var status  = (pRow['Status'] || '').trim();
+  var lft     = (pRow['Looking For Team'] || '').trim();
+  var igram   = (pRow['Instagram'] || '').trim();
+  var twitter = (pRow['Twitter'] || '').trim();
+  var youtube = (pRow['YouTube'] || pRow['Youtube'] || pRow['youtube'] || '').trim();
+  var twitch  = (pRow['Twitch'] || '').trim();
+  var tiktok  = (pRow['TikTok'] || '').trim();
+  var isFa    = !team || team === 'Free Agent';
+  var fl      = flag(country);
+
+  var avatarEl = document.getElementById('ppAvatar');
+  if (twitter) {
+  var twitterHandle = twitter.replace(/^@/,'');
+  avatarEl.innerHTML = '<img src="https://unavatar.io/twitter/' + twitterHandle + '" alt="' + name + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + name.slice(0,1).toUpperCase() + '\';this.parentElement.style.fontSize=\'1.4rem\';">';
+  avatarEl.style.background = '#1a2638';
+  avatarEl.style.fontSize = '0';
+  avatarEl.style.border = '2px solid rgba(255,255,255,0.15)';
+  } else {
+  avatarEl.textContent = name.slice(0,1).toUpperCase();
+  avatarEl.style.background = '#1a2638';
+  avatarEl.style.fontSize = '1.4rem';
+  avatarEl.style.color = 'rgba(255,255,255,0.4)';
+  avatarEl.style.border = '1px solid rgba(255,255,255,0.12)';
+  }
+  document.getElementById('ppName').textContent = name;
+  document.getElementById('ppFlag').textContent = fl;
+  document.getElementById('ppDiscord').textContent = discord;
+
+  var teamEl = document.getElementById('ppTeam');
+  teamEl.textContent = isFa ? 'Free Agent' : team;
+  teamEl.className = 'pp-team-badge' + (isFa ? ' fa' : '');
+
+  var rolePill = document.getElementById('ppRolePill');
+  if (role) { rolePill.textContent = role; rolePill.className = 'pp-role-pill'; rolePill.style.display = ''; }
+  else { rolePill.textContent = ''; rolePill.style.display = 'none'; }
+
+  var statusPill = document.getElementById('ppStatusPill');
+  if (status) {
+  var stCl = 'pp-status-pill ';
+  var stLow = status.toLowerCase();
+  if (stLow === 'active') stCl += 'pp-status-active';
+  else if (stLow.includes('semi') || stLow.includes('actif')) stCl += 'pp-status-semi';
+  else stCl += 'pp-status-ret';
+  statusPill.textContent = status;
+  statusPill.className = stCl;
+  statusPill.style.display = '';
+  } else { statusPill.textContent = ''; statusPill.style.display = 'none'; }
+
+  var lftPill = document.getElementById('ppLftPill');
+  if (lft === 'Yes') { lftPill.textContent = '🎯 LFT'; lftPill.className = 'pp-lft-pill'; lftPill.style.display = ''; }
+  else { lftPill.textContent = ''; lftPill.style.display = 'none'; }
+
+  var bioEl = document.getElementById('ppBio');
+  if (bio) { bioEl.textContent = '"' + bio + '"'; bioEl.style.display = ''; }
+  else { bioEl.style.display = 'none'; }
+
+  function cleanHandle(val) {
+  if (!val) return val;
+
+  if (val.startsWith('http')) {
+   try {
+    var u = new URL(val);
+    var seg = u.pathname.replace(/\/$/, '').split('/').pop() || u.hostname;
+    return seg;
+   } catch(e) {}
+  }
+  return val.replace(/^@/, '');
+  }
+  var ytHandle = cleanHandle(youtube);
+  var SOCIAL_DEFS = [
+  { key: igram,   label: 'Instagram', icon: '📸', color: '#E1306C', url: 'https://instagram.com/' + igram.replace(/^@/,''), display: '@' + igram.replace(/^@/,'') },
+  { key: twitter, label: 'Twitter/X', icon: '🐦', color: '#1DA1F2', url: 'https://twitter.com/' + twitter.replace(/^@/,''), display: '@' + twitter.replace(/^@/,'') },
+  { key: youtube, label: 'YouTube',   icon: '▶️', color: '#FF0000', url: youtube.startsWith('http') ? youtube : 'https://youtube.com/@' + ytHandle, display: '@' + ytHandle },
+  { key: twitch,  label: 'Twitch',    icon: '🟣', color: '#9146FF', url: 'https://twitch.tv/' + twitch.replace(/^@/,''), display: '@' + twitch.replace(/^@/,'') },
+  { key: tiktok,  label: 'TikTok',    icon: '🎵', color: '#69C9D0', url: 'https://tiktok.com/@' + tiktok.replace(/^@/,''), display: '@' + tiktok.replace(/^@/,'') },
   ];
-
-  const cardW = (W - 48 - 3*8) / 4;
-  stats.forEach((s, i) => {
-    const cx = 24 + i * (cardW + 8);
-    const cy = 76;
-    roundRect(ctx, cx, cy, cardW, 60, 5);
-    ctx.fillStyle = C.card; ctx.fill();
-    ctx.strokeStyle = rgba(C.white, 0.07); ctx.lineWidth = 1; ctx.stroke();
-
-    // Top accent
-    ctx.fillStyle = rgba(s.color, 0.5);
-    roundRect(ctx, cx, cy, cardW, 3, 2); ctx.fill();
-
-    ctx.font = "800 22px sans-serif";
-    ctx.fillStyle = s.color;
-    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText(s.val, cx + cardW/2, cy + 30);
-
-    ctx.font = "600 8px sans-serif";
-    ctx.fillStyle = rgba(C.muted, 0.55);
-    ctx.fillText(s.label, cx + cardW/2, cy + 52);
-  });
-  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
-
-  // Résultats de tournois
-  drawDivider(ctx, 24, W - 24, 152);
-  drawSectionLabel(ctx, "TOURNAMENT RESULTS", 24, 168, W);
-
-  if (!hasResults) {
-    ctx.font = "italic 12px sans-serif";
-    ctx.fillStyle = rgba(C.muted, 0.4);
-    ctx.textBaseline = "middle";
-    ctx.fillText("No tournament results yet", 28, 190);
+  var socialRows = SOCIAL_DEFS.filter(function(s){ return !!s.key; });
+  var socialsSection = document.getElementById('ppSocialsSection');
+  var socialsContainer = document.getElementById('ppSocials');
+  if (socialRows.length) {
+  socialsContainer.innerHTML = socialRows.map(function(s) {
+   return '<a class="pp-social-row" href="' + s.url + '" target="_blank" rel="noopener">' +
+    '<span class="pp-social-icon">' + s.icon + '</span>' +
+    '<span class="pp-social-label">' + s.label + '</span>' +
+    '<span class="pp-social-val" style="color:' + s.color + '">' + s.display + '</span>' +
+    '</a>';
+  }).join('');
+  socialsSection.style.display = '';
   } else {
-    results.forEach((res, i) => {
-      const y = 178 + i * 44;
-      roundRect(ctx, 24, y, W - 48, 38, 4);
-      ctx.fillStyle = rgba(C.white, i%2===0 ? 0.04 : 0.02); ctx.fill();
-
-      // Placement
-      const plColors = { "1":"gold","1st":"gold","1er":"gold","2":"silver","2nd":"silver","3":"bronze","3rd":"bronze" };
-      const plColor = C[plColors[(res.place||"").toLowerCase()]] || rgba(C.muted, 0.55);
-      ctx.font = "800 20px sans-serif";
-      ctx.fillStyle = plColor;
-      ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      ctx.fillText(`#${res.place}`, 56, y + 19);
-
-      // Nom du tournoi
-      ctx.font = "700 12px sans-serif";
-      ctx.fillStyle = C.white;
-      ctx.textAlign = "left";
-      ctx.fillText(res.tournament || "—", 80, y + 14);
-
-      // Date
-      if (res.date) {
-        ctx.font = "500 10px sans-serif";
-        ctx.fillStyle = rgba(C.muted, 0.55);
-        ctx.fillText(res.date, 80, y + 28);
-      }
-
-      // Prize
-      if (res.prize) {
-        ctx.font = "700 11px sans-serif";
-        ctx.fillStyle = C.gold;
-        ctx.textAlign = "right";
-        ctx.fillText(res.prize, W - 36, y + 19);
-      }
-      ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
-    });
+  socialsSection.style.display = 'none';
   }
 
-  drawFooter(ctx, W, H);
-  return canvas.toBuffer("image/png");
+  var moves = DATA.rosterMoves.filter(function(m) {
+  return m.player.toLowerCase() === name.toLowerCase();
+  });
+  var FA_V = ['free agent', 'agent libre', 'libre', 'libre agent'];
+  var teamsSet = new Set(
+  moves.filter(function(m){ return m.type === 'join' || m.type === 'transfer'; })
+     .map(function(m){ return m.to; })
+     .filter(function(t){ return t && !FA_V.includes(t.toLowerCase()); })
+  );
+
+  document.getElementById('ppStats').innerHTML =
+  '<div class="pp-stat"><div class="pp-stat-n">' + teamsSet.size + '</div><div class="pp-stat-l">Teams</div></div>' +
+  '<div class="pp-stat"><div class="pp-stat-n">' + moves.length + '</div><div class="pp-stat-l">Moves</div></div>' +
+  '<div class="pp-stat"><div class="pp-stat-n">' + moves.filter(function(m){ return m.type === 'join'; }).length + '</div><div class="pp-stat-l">Signings</div></div>';
+
+  var chrono = moves.slice().reverse();
+  document.getElementById('ppTimeline').innerHTML = chrono.length
+  ? chrono.map(function(m) {
+    var isFA  = FA_V.includes(m.to.toLowerCase());
+    var dotCl = m.type === 'join' ? 'join' : (isFA ? 'fa' : '');
+    var bl    = {join:'Signing', leave:'Departure', transfer:'Transfer'}[m.type] || m.type;
+    var teamL = isFA ? 'Free Agent' : (m.type === 'leave' ? m.from : m.to);
+    var teamCl = isFA ? 'fa' : '';
+    var desc = m.type === 'leave'
+   ? 'Left <strong>' + m.from + '</strong>'
+   : m.from + ' &rarr; <strong>' + m.to + '</strong>';
+    return '<div class="pp-item">' +
+   '<div class="pp-dot ' + dotCl + '"></div>' +
+   '<div class="pp-card">' +
+    '<div><div class="pp-card-team ' + teamCl + '">' + teamL + '</div>' +
+    '<div class="pp-card-desc">' + desc + '</div></div>' +
+    '<div class="pp-card-right"><span class="pp-badge ' + m.type + '">' + bl + '</span>' +
+    '<div class="pp-card-date">' + m.date + '</div></div>' +
+   '</div></div>';
+   }).join('')
+  : '<div class="state-box"><div class="state-icon">📋</div><div class="state-title">No history found</div></div>';
+
+  _goProfile('player');
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  TOURNAMENTS
-// ═══════════════════════════════════════════════════════════════
-function renderTournaments(upcoming, past) {
-  const ROW_H = 62, W = 700;
-  let H = 106;
-  if (upcoming.length) H += 28 + upcoming.length * ROW_H;
-  if (past.length)     H += 36 + past.length * ROW_H;
-  H += 28;
+function openTeamProfile(teamName) {
+  var t = DATA.teams.find(function(x){ return x.name === teamName; });
+  if (!t) return;
 
-  const canvas = createCanvas(W, H);
-  const ctx    = canvas.getContext("2d");
-  drawBg(ctx, W, H);
-  drawTopBar(ctx, W);
+  var ri   = DATA.rankings.find(function(r){ return r.name === t.name; }) || null;
+  var earn = DATA.teamEarnings && DATA.teamEarnings[t.name] ? '$' + DATA.teamEarnings[t.name] : '';
+  var FA_V = ['free agent', 'agent libre', 'libre', 'libre agent'];
 
-  // Titre
-  ctx.font = "900 34px sans-serif";
-  ctx.textBaseline = "top";
-  ctx.fillStyle = C.gold;
-  ctx.fillText("TOURNAMENTS", 24, 16);
-  ctx.fillStyle = C.gold;
-  ctx.fillRect(24, 56, 60, 3);
-  ctx.font = "600 10px sans-serif";
-  ctx.fillStyle = rgba(C.muted, 0.65);
-  ctx.fillText(`GSN R6 MOBILE CIRCUIT  ·  ${upcoming.length + past.length} EVENTS`, 24, 66);
+  document.getElementById('tpBadge').textContent = t.name.slice(0,3).toUpperCase();
+  document.getElementById('tpName').textContent = t.name;
+  document.getElementById('tpMeta').innerHTML =
+  '<span class="tp-pill tp-pill-region">' + t.region + '</span>' +
+  (ri ? '<span class="tp-pill tp-pill-rank">Rank #' + ri.rank + ' &middot; ' + ri.rating.toFixed(1) + '</span>' : '') +
+  (earn ? '<span class="tp-pill tp-pill-earn">' + earn + ' earned</span>' : '') +
+  (t.disband ? '<span class="tp-pill tp-pill-dis">Disbanded</span>' : '');
 
-  let y = 90;
-
-  if (upcoming.length) {
-    drawSectionLabel(ctx, "UPCOMING", 24, y + 12, W); y += 28;
-    upcoming.forEach((t, i) => {
-      if (i%2===0) { ctx.fillStyle=rgba(C.white,0.04);ctx.fillRect(0,y,W,ROW_H-2); }
-
-      // Barre rouge animée (à gauche)
-      const bg = ctx.createLinearGradient(0,y,0,y+ROW_H);
-      bg.addColorStop(0, rgba(C.red2, 0.9)); bg.addColorStop(1, rgba(C.red, 0.25));
-      ctx.fillStyle = bg; ctx.fillRect(0, y, 4, ROW_H - 2);
-
-      // Dot rouge pulsant
-      ctx.fillStyle = rgba(C.red, 0.25);
-      ctx.beginPath(); ctx.arc(22, y+ROW_H/2-4, 7, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = C.red;
-      ctx.beginPath(); ctx.arc(22, y+ROW_H/2-4, 4, 0, Math.PI*2); ctx.fill();
-
-      ctx.font = "800 15px sans-serif"; ctx.fillStyle = C.white;
-      ctx.textBaseline = "middle"; ctx.fillText(t.name, 40, y+ROW_H/2-10);
-
-      ctx.font = "500 11px sans-serif"; ctx.fillStyle = rgba(C.muted, 0.75);
-      ctx.fillText(t.date || "Date TBD", 40, y+ROW_H/2+10);
-
-      if (t.prize) {
-        ctx.font = "700 12px sans-serif"; ctx.fillStyle = rgba(C.gold, 0.9);
-        ctx.textAlign = "right"; ctx.fillText(t.prize, W-24, y+ROW_H/2);
-        ctx.textAlign = "left";
-      }
-      ctx.strokeStyle = rgba(C.white,0.05); ctx.lineWidth=1;
-      ctx.beginPath(); ctx.moveTo(0,y+ROW_H); ctx.lineTo(W,y+ROW_H); ctx.stroke();
-      y += ROW_H;
-    });
-  }
-
-  if (past.length) {
-    y += 8;
-    drawSectionLabel(ctx, "COMPLETED", 24, y + 12, W); y += 28;
-    past.forEach((t, i) => {
-      if (i%2===0) { ctx.fillStyle=rgba(C.white,0.025);ctx.fillRect(0,y,W,ROW_H-2); }
-      ctx.fillStyle = rgba(C.muted, 0.35); ctx.fillRect(0, y, 4, ROW_H-2);
-
-      ctx.fillStyle = rgba(C.muted, 0.3);
-      ctx.beginPath(); ctx.arc(22, y+ROW_H/2-4, 4, 0, Math.PI*2); ctx.fill();
-
-      ctx.font = "700 14px sans-serif"; ctx.fillStyle = rgba(C.white, 0.72);
-      ctx.textBaseline = "middle"; ctx.fillText(t.name, 40, y+ROW_H/2-10);
-
-      if (t.winner) {
-        ctx.font = "600 11px sans-serif"; ctx.fillStyle = C.gold;
-        ctx.fillText(`🏆 ${t.winner}`, 40, y+ROW_H/2+10);
-      }
-
-      if (t.prize) {
-        ctx.font = "600 11px sans-serif"; ctx.fillStyle = rgba(C.gold, 0.65);
-        ctx.textAlign = "right"; ctx.fillText(t.prize, W-24, y+ROW_H/2);
-        ctx.textAlign = "left";
-      }
-
-      ctx.strokeStyle=rgba(C.white,0.04);ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(0,y+ROW_H);ctx.lineTo(W,y+ROW_H);ctx.stroke();
-      y += ROW_H;
-    });
-  }
-
-  drawFooter(ctx, W, H,
-    new Date().toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" }));
-  return canvas.toBuffer("image/png");
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  FREE AGENTS
-// ═══════════════════════════════════════════════════════════════
-function renderFreeAgents(fas) {
-  const COLS=2, ROW_H=48, W=700;
-  const rows = Math.ceil(fas.length / COLS);
-  const H    = 108 + rows * ROW_H + 28;
-  const colW = (W - 48) / COLS;
-
-  const canvas = createCanvas(W, H);
-  const ctx    = canvas.getContext("2d");
-  drawBg(ctx, W, H);
-  drawTopBar(ctx, W);
-
-  // Titre
-  ctx.font = "900 34px sans-serif";
-  ctx.textBaseline = "top";
-  ctx.fillStyle = C.green;
-  ctx.fillText("FREE AGENTS", 24, 16);
-  ctx.fillStyle = C.green;
-  ctx.fillRect(24, 56, 56, 3);
-  ctx.font = "600 10px sans-serif";
-  ctx.fillStyle = rgba(C.muted, 0.65);
-  ctx.fillText(`${fas.length} PLAYERS AVAILABLE FOR RECRUITMENT`, 24, 66);
-
-  // En-têtes colonnes
-  ctx.fillStyle = rgba(C.navy, 0.95);
-  ctx.fillRect(0, 82, W, 22);
-  ctx.font = "700 8px sans-serif";
-  ctx.fillStyle = rgba(C.muted, 0.4);
-  ctx.textBaseline = "middle";
-  [0, 1].forEach(c => ctx.fillText("PLAYER", 24 + c * colW, 93));
-  ctx.textBaseline = "alphabetic";
-
-  fas.forEach((p, i) => {
-    const col = i % COLS, row = Math.floor(i / COLS);
-    const x   = 24 + col * colW;
-    const y   = 108 + row * ROW_H;
-    const cw  = colW - 12;
-
-    // Carte joueur
-    roundRect(ctx, x, y, cw, ROW_H - 6, 4);
-    ctx.fillStyle = rgba(C.white, 0.04); ctx.fill();
-    ctx.strokeStyle = rgba(C.white, 0.06); ctx.lineWidth = 1; ctx.stroke();
-
-    // Barre verte gauche
-    roundRect(ctx, x, y, 3, ROW_H - 6, 2);
-    ctx.fillStyle = rgba(C.green, 0.7); ctx.fill();
-
-    // Drapeau
-    drawFlag(ctx, p.country, x + 20, y + (ROW_H-6)/2 - 2, 12);
-
-    // Nom + ex-équipe
-    ctx.font = "700 13px sans-serif"; ctx.fillStyle = C.white;
-    ctx.textBaseline = "middle";
-    ctx.fillText(p.name, x + 38, y + (ROW_H-6)/2 - 7);
-
-    if (p.previousTeam) {
-      const nameW = ctx.measureText(p.name).width;
-      ctx.font = "500 9px sans-serif"; ctx.fillStyle = rgba(C.muted, 0.5);
-      ctx.fillText(`ex-${p.previousTeam}`, x + 38 + nameW + 6, y + (ROW_H-6)/2 - 7);
-    }
-
-    // Discord
-    if (p.discord) {
-      ctx.font = "500 10px sans-serif"; ctx.fillStyle = rgba(C.disc, 0.75);
-      ctx.fillText(
-        (p.discord.startsWith("@") ? p.discord : "@" + p.discord),
-        x + 38, y + (ROW_H-6)/2 + 8
-      );
-    }
+  var teamRes = [];
+  DATA.tournaments.forEach(function(tourn) {
+  var res = tourn.results.find(function(r){ return r.team.toLowerCase() === t.name.toLowerCase(); });
+  if (res) teamRes.push({
+   name: tourn.name,
+   place: String(res.place || ''),
+   prize: res.prizePerTeam || '',
+   date: tourn.dateDisplay || tourn.dateStart || '',
+   dateStart: tourn.dateStart || '',
+   dateEnd: tourn.dateEnd || '',
+   liquipedia: tourn.liquipedia || ''
+  });
   });
 
-  drawFooter(ctx, W, H, `${fas.length} available`);
-  return canvas.toBuffer("image/png");
+  var moves = DATA.rosterMoves.filter(function(m){
+  return m.to.toLowerCase() === t.name.toLowerCase() ||
+    m.from.toLowerCase() === t.name.toLowerCase();
+  });
+
+  var wins    = teamRes.filter(function(r){ return r.place === '1' || r.place === '1st' || r.place === '1er'; }).length;
+  var podiums = teamRes.filter(function(r){ var p = parseInt(r.place); return p >= 1 && p <= 3; }).length;
+
+  document.getElementById('tpStats').innerHTML =
+  '<div class="tp-stat"><div class="tp-stat-n">' + t.players.length + '</div><div class="tp-stat-l">Players</div></div>' +
+  '<div class="tp-stat"><div class="tp-stat-n">' + teamRes.length + '</div><div class="tp-stat-l">Tourneys</div></div>' +
+  '<div class="tp-stat"><div class="tp-stat-n">' + wins + '</div><div class="tp-stat-l">Wins</div></div>' +
+  '<div class="tp-stat"><div class="tp-stat-n">' + podiums + '</div><div class="tp-stat-l">Podiums</div></div>' +
+  '<div class="tp-stat"><div class="tp-stat-n">' + moves.length + '</div><div class="tp-stat-l">Moves</div></div>';
+
+  function rosterHTML(players) {
+  if (!players.length) return '<li style="font-size:.8rem;color:var(--muted);padding:.5rem 0">No roster data</li>';
+  return players.map(function(p) {
+   return '<li class="tp-rp" data-player="' + p.name.replace(/"/g, '&quot;') + '" title="View profile">' +
+    '<span class="tp-rp-flag">' + (p.flag || '🏴') + '</span>' +
+    '<span class="tp-rp-name">' + p.name + '</span>' +
+    (p.discord ? '<span class="tp-rp-disc">' + p.discord + '</span>' : '') +
+    '<span style="font-size:.65rem;color:var(--muted)">&#8594;</span>' +
+   '</li>';
+  }).join('');
+  }
+  document.getElementById('tpRosterOv').innerHTML   = rosterHTML(t.players);
+  document.getElementById('tpRosterFull').innerHTML = rosterHTML(t.players);
+
+  function placeCl(p) {
+  if (p === '1' || p === '1st' || p === '1er') return 'gold';
+  if (p === '2' || p === '2nd' || p === '2ème' || p === '2e') return 'silver';
+  if (p === '3' || p === '3rd' || p === '3ème' || p === '3e') return 'bronze';
+  return 'other';
+  }
+  function placeLabel(p) {
+  if (p === '1' || p === '1st' || p === '1er') return '🥇';
+  if (p === '2' || p === '2nd' || p === '2ème' || p === '2e') return '🥈';
+  if (p === '3' || p === '3rd' || p === '3ème' || p === '3e') return '🥉';
+  return '#' + p;
+  }
+  function resultsHTML(results) {
+  if (!results.length) return '<div style="font-size:.82rem;color:var(--muted);padding:.5rem 0">No results yet.</div>';
+  return results.map(function(r) {
+   return '<div class="tp-res">' +
+    '<div class="tp-res-place ' + placeCl(r.place) + '">' + placeLabel(r.place) + '</div>' +
+    '<div class="tp-res-info"><div class="tp-res-name">' + r.name + '</div>' +
+    '<div class="tp-res-meta">' + r.date + (r.prize ? ' &middot; ' + r.prize : '') + '</div></div>' +
+    '<div class="tp-res-right">' +
+   (r.prize ? '<span class="tp-res-prize">' + r.prize + '</span>' : '') +
+   (r.liquipedia ? '<a href="' + r.liquipedia + '" target="_blank" class="tp-res-lp">Liquipedia</a>' : '') +
+    '</div>' +
+   '</div>';
+  }).join('');
+  }
+  document.getElementById('tpRecentRes').innerHTML = resultsHTML(teamRes.slice(0, 3));
+  document.getElementById('tpAllRes').innerHTML     = resultsHTML(teamRes);
+
+  document.getElementById('tpMoves').innerHTML = moves.length
+  ? moves.map(function(m) {
+    var isJoin = m.to.toLowerCase() === t.name.toLowerCase();
+    var typeLbl = isJoin ? 'Signing' : 'Departure';
+    var typeCl  = isJoin ? 'join' : 'leave';
+    var desc    = isJoin
+   ? 'from ' + (m.from || '?')
+   : 'to ' + (m.to || '?');
+    return '<div class="tp-mv">' +
+   '<span class="tp-mv-date">' + m.date + '</span>' +
+   '<div><div class="tp-mv-player" data-player="' + m.player.replace(/"/g, '&quot;') + '">' + m.player + '</div>' +
+   '<div class="tp-mv-sub">' + desc + '</div></div>' +
+   '<span class="tp-mv-badge ' + typeCl + '">' + typeLbl + '</span>' +
+    '</div>';
+   }).join('')
+  : '<div style="font-size:.82rem;color:var(--muted);padding:.5rem 0">No transfer history.</div>';
+
+  buildStatsCharts(t, moves, teamRes);
+
+  document.querySelectorAll('.tp-tab').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.tp-panel').forEach(function(p){ p.classList.remove('active'); });
+  var firstTab = document.querySelector('.tp-tab');
+  if (firstTab) firstTab.classList.add('active');
+  var overviewPanel = document.getElementById('tp-overview');
+  if (overviewPanel) overviewPanel.classList.add('active');
+
+  _goProfile('team-profile');
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  PLAYER PROFILE
-// ═══════════════════════════════════════════════════════════════
-function renderProfile(profile) {
-  const W    = 640;
-  const FOOT = 28;
+function buildStatsCharts(team, moves, teamRes) {
+  document.querySelectorAll('.tp-stab').forEach(function(btn) {
+  btn.onclick = function() {
+   document.querySelectorAll('.tp-stab').forEach(function(b){ b.classList.remove('active'); });
+   document.querySelectorAll('.tp-stab-panel').forEach(function(p){ p.classList.remove('active'); });
+   btn.classList.add('active');
+   var panel = document.getElementById('tp-stab-' + btn.dataset.stab);
+   if (panel) panel.classList.add('active');
+  };
+  });
 
-  const hasBio     = !!(profile.bio && profile.bio.trim());
-  const socialList = ["instagram","twitter","youtube","twitch","tiktok"].filter(k => profile[k]);
-  const hasSocials = socialList.length > 0;
+  var PALETTE = ['#e57c3a','#e8c84a','#c8522a','#f0a0b8','#9c2090','#c0d870','#c8c060',
+  '#4080d0','#50c8a0','#a070d0','#e03050','#60b840','#d08040','#50a0e0','#e060a0','#70d0d0','#b0b0e0'];
 
-  const H = 100
-    + 48                                    // pills
-    + (hasBio ? 50 : 0)
-    + 32                                    // divider
-    + (hasSocials ? 24 + socialList.length * 28 : 0)
-    + 12
-    + FOOT;
+  function parseD(s) {
+  if (!s) return null;
+  s = s.trim();
 
-  const canvas = createCanvas(W, H);
-  const ctx    = canvas.getContext("2d");
-  drawBg(ctx, W, H);
-  drawTopBar(ctx, W);
+  var p = s.split('/');
+  if (p.length === 3 && p[0].length <= 2 && parseInt(p[0]) <= 31) {
+   var d = new Date(p[2], p[1]-1, p[0]);
+   if (!isNaN(d) && d.getFullYear() > 2000) return d;
+  }
 
-  // Avatar cercle avec drapeau
-  const AV_R = 30, AV_CX = 28 + AV_R, AV_CY = 20 + AV_R;
-  ctx.fillStyle = rgba(C.red, 0.15);
-  ctx.beginPath(); ctx.arc(AV_CX, AV_CY, AV_R, 0, Math.PI*2); ctx.fill();
-  ctx.strokeStyle = rgba(C.red, 0.45); ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.arc(AV_CX, AV_CY, AV_R, 0, Math.PI*2); ctx.stroke();
+  if (p.length === 3) { var d2 = new Date(p[2], p[0]-1, p[1]); if (!isNaN(d2) && d2.getFullYear() > 2000) return d2; }
 
-  if (profile.country) {
-    drawFlag(ctx, profile.country, AV_CX, AV_CY, AV_R - 3);
+  var p3 = s.split('.');
+  if (p3.length === 3) { var d3 = new Date(p3[2], p3[1]-1, p3[0]); if (!isNaN(d3) && d3.getFullYear() > 2000) return d3; }
+  var d4 = new Date(s); return isNaN(d4) ? null : d4;
+  }
+
+  var isDark = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark';
+  var SVG_BG    = isDark ? '#141e2d'               : '#ffffff';
+  var SVG_GRID  = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+  var SVG_TICK  = isDark ? 'rgba(255,255,255,0.35)' : '#8898b0';
+  var SVG_LABEL = isDark ? 'rgba(255,255,255,0.28)' : '#8898b0';
+  var SVG_ROW   = isDark ? 'rgba(255,255,255,0.75)' : '#1a2540';
+  var SVG_OTHER = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)';
+  var SVG_AXIS  = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
+  var NOW = new Date();
+  var FA_V = ['free agent','agent libre','libre','libre agent','free  agent'];
+
+  var segments = {};
+  var allMoves = DATA.rosterMoves.slice().reverse();
+
+  var teamMovesRaw = DATA._rawRoster || [];
+
+  var playerSet = new Set();
+  moves.forEach(function(m) { playerSet.add(m.player); });
+
+  team.players.forEach(function(p) { playerSet.add(p.name); });
+
+  playerSet.forEach(function(playerName) {
+  var playerMoves = allMoves.filter(function(m) {
+   return m.player.toLowerCase() === playerName.toLowerCase();
+  });
+  var segs = [];
+  for (var i = 0; i < playerMoves.length; i++) {
+   var m = playerMoves[i];
+   var isFA_to = FA_V.includes(m.to.toLowerCase());
+   var isFA_from = FA_V.includes(m.from.toLowerCase());
+   var dateFrom = parseD(m.rawDate || m.date);
+   if (!dateFrom) continue;
+   if (!isFA_to) {
+    var dateTo = null;
+    for (var j = i + 1; j < playerMoves.length; j++) {
+   if (playerMoves[j].from.toLowerCase() === m.to.toLowerCase()) {
+    dateTo = parseD(playerMoves[j].rawDate || playerMoves[j].date);
+    break;
+   }
+    }
+    if (!dateTo) dateTo = NOW;
+    segs.push({ team: m.to, from: dateFrom, to: dateTo });
+   }
+  }
+  if (segs.length) segments[playerName] = segs;
+  });
+
+  var relevantPlayers = Object.keys(segments).filter(function(name) {
+  return segments[name].some(function(s) {
+   return s.team.toLowerCase() === team.name.toLowerCase();
+  });
+  });
+
+  function renderGantt(containerId) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  if (!relevantPlayers.length) {
+   container.innerHTML = '<div class="stat-chart-wrap"><div style="font-size:.82rem;color:var(--muted);padding:1rem 0">No timeline data available.</div></div>';
+   return;
+  }
+
+  var allDates = [];
+  relevantPlayers.forEach(function(name) {
+   segments[name].forEach(function(s) {
+    allDates.push(s.from);
+
+    if (s.to - NOW < 1000) allDates.push(NOW);
+    else allDates.push(s.to);
+   });
+  });
+  var minDate = new Date(Math.min.apply(null, allDates));
+  var maxDate = new Date(Math.max.apply(null, allDates));
+
+  var cap = new Date(NOW.getFullYear(), NOW.getMonth() + 6, 1);
+  if (maxDate > cap) maxDate = cap;
+
+  minDate = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+  maxDate = new Date(maxDate.getFullYear(), maxDate.getMonth() + 1, 1);
+
+  var totalMs = maxDate - minDate;
+  var totalMonths = (maxDate.getFullYear() - minDate.getFullYear()) * 12 + (maxDate.getMonth() - minDate.getMonth());
+  var ROW_H = 28, ROW_GAP = 6, LABEL_W = 90, PAD_TOP = 36, PAD_BOT = 30, PAD_RIGHT = 16;
+  var svgW = 700;
+  var chartW = svgW - LABEL_W - PAD_RIGHT;
+  var svgH = PAD_TOP + relevantPlayers.length * (ROW_H + ROW_GAP) + PAD_BOT;
+
+  var MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var ticks = [];
+  if (totalMonths <= 18) {
+   var cur = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+   while (cur <= maxDate) {
+    ticks.push({ date: new Date(cur), label: MONTHS_SHORT[cur.getMonth()] + (cur.getMonth() === 0 ? ' ' + cur.getFullYear() : '') });
+    cur.setMonth(cur.getMonth() + 1);
+   }
   } else {
-    ctx.font = `800 ${AV_R * 0.85}px sans-serif`;
-    ctx.fillStyle = C.white; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText((profile.username || "?").slice(0,1).toUpperCase(), AV_CX, AV_CY+1);
-    ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+   for (var y = minDate.getFullYear(); y <= maxDate.getFullYear(); y++) {
+    ticks.push({ date: new Date(y, 0, 1), label: String(y) });
+   }
   }
 
-  // Nom
-  const NX = AV_CX + AV_R + 18;
-  ctx.font = "900 30px sans-serif";
-  ctx.fillStyle = C.white; ctx.textBaseline = "top";
-  ctx.fillText((profile.username || "Unknown").toUpperCase(), NX, 20);
-  const nw = ctx.measureText((profile.username || "Unknown").toUpperCase()).width;
-  ctx.fillStyle = C.red;
-  ctx.fillRect(NX, 58, Math.min(nw, W - NX - 24), 3);
+  var dateToX = function(d) {
+   return LABEL_W + ((d - minDate) / totalMs) * chartW;
+  };
 
-  let y = AV_CY + AV_R + 14;
+  var playerColors = {};
+  relevantPlayers.forEach(function(name, i) {
+   playerColors[name] = PALETTE[i % PALETTE.length];
+  });
 
-  // Pills
-  function drawPill(label, color, px, py) {
-    ctx.font = "700 9px sans-serif";
-    const pw = ctx.measureText(label).width + 20;
-    roundRect(ctx, px, py, pw, 22, 4);
-    ctx.fillStyle = rgba(color, 0.15); ctx.fill();
-    ctx.strokeStyle = rgba(color, 0.40); ctx.lineWidth = 1; ctx.stroke();
-    ctx.fillStyle = color;
-    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText(label, px + pw/2, py + 11);
-    ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
-    return pw + 8;
+  var svgParts = ['<svg class="gantt-svg" viewBox="0 0 ' + svgW + ' ' + svgH + '" xmlns="http://www.w3.org/2000/svg" style="font-family:\'Barlow\',sans-serif">'];
+
+  svgParts.push('<rect width="' + svgW + '" height="' + svgH + '" fill="' + SVG_BG + '" rx="0"/>');
+
+  ticks.forEach(function(t) {
+   var x = dateToX(t.date);
+   if (x < LABEL_W || x > svgW - PAD_RIGHT) return;
+   svgParts.push('<line x1="' + x + '" y1="' + PAD_TOP + '" x2="' + x + '" y2="' + (svgH - PAD_BOT) + '" stroke="' + SVG_GRID + '" stroke-width="1"/>');
+   svgParts.push('<text x="' + x + '" y="' + (svgH - PAD_BOT + 18) + '" text-anchor="middle" font-size="10" fill="' + SVG_TICK + '">' + t.label + '</text>');
+  });
+
+  svgParts.push('<text x="' + (LABEL_W + chartW/2) + '" y="' + svgH + '" text-anchor="middle" font-size="10" fill="' + SVG_LABEL + '" font-weight="600" letter-spacing="1">' + (totalMonths <= 18 ? 'MONTH' : 'YEAR') + '</text>');
+
+  relevantPlayers.forEach(function(name, i) {
+   var y = PAD_TOP + i * (ROW_H + ROW_GAP);
+   var pColor = playerColors[name];
+
+   svgParts.push('<text x="' + (LABEL_W - 8) + '" y="' + (y + ROW_H/2 + 4) + '" text-anchor="end" font-size="11.5" fill="' + SVG_ROW + '" font-weight="600">' + name + '</text>');
+
+   segments[name].forEach(function(s) {
+    var x1 = Math.max(dateToX(s.from), LABEL_W);
+    var x2 = Math.min(dateToX(s.to), LABEL_W + chartW);
+    var w = Math.max(x2 - x1, 4);
+    var isCurrentTeam = s.team.toLowerCase() === team.name.toLowerCase();
+    var color = isCurrentTeam ? pColor : SVG_OTHER;
+    svgParts.push('<rect x="' + x1 + '" y="' + (y + 2) + '" width="' + w + '" height="' + (ROW_H - 4) + '" fill="' + color + '" rx="3"/>');
+   });
+  });
+
+  svgParts.push('</svg>');
+  container.innerHTML = '<div class="stat-chart-wrap"><div class="stat-chart-title">Player Team History</div>' + svgParts.join('') + '</div>';
   }
 
-  let px = 24;
-  const isFa = !profile.team || profile.team === "Free Agent";
-  px += drawPill(isFa ? "FREE AGENT" : profile.team.toUpperCase(), isFa ? C.green : C.red, px, y);
-  if (profile.role)   px += drawPill(profile.role.toUpperCase(), C.muted, px, y);
-  if (profile.status) {
-    const sc = profile.status.toLowerCase() === "active" ? C.green
-             : profile.status.toLowerCase().includes("ret") ? C.muted : C.gold;
-    px += drawPill(profile.status.toUpperCase(), sc, px, y);
-  }
-  if (profile.lft === "Yes") drawPill("LFT", C.green, px, y);
+  function renderEarnings(containerId) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
 
-  y += 38;
+  var byYear = {};
+  teamRes.forEach(function(r) {
+   if (!r.prize) return;
+   var num = parseFloat(r.prize.replace(/[^0-9.]/g, ''));
+   if (!num || isNaN(num)) return;
 
-  // Bio
-  if (hasBio) {
-    roundRect(ctx, 24, y, W-48, 38, 5);
-    ctx.fillStyle = rgba(C.white, 0.04); ctx.fill();
-    ctx.strokeStyle = rgba(C.white, 0.07); ctx.lineWidth = 1; ctx.stroke();
-    roundRect(ctx, 24, y, 3, 38, 2);
-    ctx.fillStyle = rgba(C.red, 0.6); ctx.fill();
+   var d = parseD(r.dateEnd) || parseD(r.dateStart);
+   if (!d) return;
+   var yr = d.getFullYear();
+   byYear[yr] = (byYear[yr] || 0) + num;
+  });
 
-    ctx.font = "italic 12px sans-serif";
-    ctx.fillStyle = rgba(C.white, 0.70);
-    ctx.textBaseline = "middle";
-    let bio = `"${profile.bio}"`;
-    const maxW = W - 80;
-    while (ctx.measureText(bio).width > maxW && bio.length > 5) bio = bio.slice(0,-2) + '\u2026"';
-    ctx.fillText(bio, 40, y + 19);
-    ctx.textBaseline = "alphabetic";
-    y += 50;
+  var years = Object.keys(byYear).map(Number).sort();
+  if (!years.length) {
+   container.innerHTML = '<div class="stat-chart-wrap"><div style="font-size:.82rem;color:var(--muted);padding:1rem 0">No earnings data available.</div></div>';
+   return;
   }
 
-  // Divider
-  drawDivider(ctx, 24, W-24, y);
-  y += 22;
+  var minY = years[0], maxY = years[years.length-1];
+  var allYears = [];
+  for (var y = minY; y <= maxY; y++) allYears.push(y);
 
-  // Socials
-  if (hasSocials) {
-    drawSectionLabel(ctx, "RÉSEAUX SOCIAUX", 24, y + 8, W);
-    y += 24;
+  var maxEarn = Math.max.apply(null, allYears.map(function(y){ return byYear[y]||0; }));
+  var PAD_L = 64, PAD_R = 24, PAD_T = 24, PAD_B = 44;
+  var svgW = 560, svgH = 220;
+  var chartW = svgW - PAD_L - PAD_R;
+  var chartH = svgH - PAD_T - PAD_B;
+  var barW = Math.min(48, (chartW / allYears.length) * 0.6);
 
-    const SDEFS = {
-      instagram: { label:"Instagram", color:"#E1306C" },
-      twitter:   { label:"Twitter/X",  color:"#1DA1F2" },
-      youtube:   { label:"YouTube",    color:"#FF0000" },
-      twitch:    { label:"Twitch",     color:"#9146FF" },
-      tiktok:    { label:"TikTok",     color:"#69C9D0" },
-    };
+  var yTicks = [];
+  var step = Math.pow(10, Math.floor(Math.log10(maxEarn)));
+  if (maxEarn / step < 3) step = step / 2;
+  for (var v = 0; v <= maxEarn * 1.1; v += step) yTicks.push(Math.round(v));
+  var maxTick = yTicks[yTicks.length-1];
 
-    socialList.forEach(key => {
-      const def = SDEFS[key];
-      const val = profile[key];
-      const RH  = 28;
+  var earnToY = function(v) { return PAD_T + chartH - (v / maxTick) * chartH; };
+  var yearToX = function(yi) { return PAD_L + (yi + 0.5) * (chartW / allYears.length); };
 
-      roundRect(ctx, 24, y, W-48, RH - 2, 4);
-      ctx.fillStyle = rgba(C.white, 0.04); ctx.fill();
-      ctx.strokeStyle = rgba(C.white, 0.06); ctx.lineWidth = 1; ctx.stroke();
+  var svgParts = ['<svg class="bar-chart-svg" viewBox="0 0 ' + svgW + ' ' + svgH + '" xmlns="http://www.w3.org/2000/svg" style="font-family:\'Barlow\',sans-serif">'];
+  svgParts.push('<rect width="' + svgW + '" height="' + svgH + '" fill="' + SVG_BG + '"/>');
 
-      roundRect(ctx, 24, y, 3, RH-2, 2);
-      ctx.fillStyle = def.color; ctx.fill();
+  yTicks.forEach(function(v) {
+   var y = earnToY(v);
+   svgParts.push('<line x1="' + PAD_L + '" y1="' + y + '" x2="' + (svgW-PAD_R) + '" y2="' + y + '" stroke="' + SVG_GRID + '" stroke-width="1"/>');
+   var label = v >= 1000 ? (v/1000).toFixed(0)+'k' : v;
+   svgParts.push('<text x="' + (PAD_L-6) + '" y="' + (y+4) + '" text-anchor="end" font-size="10" fill="' + SVG_TICK + '">' + label + '</text>');
+  });
 
-      ctx.font = "700 9px sans-serif";
-      ctx.fillStyle = rgba(C.white, 0.40);
-      ctx.textBaseline = "middle";
-      ctx.fillText(def.label.toUpperCase(), 36, y + (RH-2)/2);
-      const lw = ctx.measureText(def.label.toUpperCase()).width;
+  svgParts.push('<text x="12" y="' + (PAD_T + chartH/2) + '" text-anchor="middle" font-size="10" fill="' + SVG_LABEL + '" font-weight="600" letter-spacing="1" transform="rotate(-90,12,' + (PAD_T+chartH/2) + ')">EARNINGS ($)</text>');
 
-      ctx.font = "600 12px sans-serif";
-      ctx.fillStyle = def.color;
-      ctx.fillText(`@${val}`, 36 + lw + 16, y + (RH-2)/2);
-      ctx.textBaseline = "alphabetic";
-      y += RH;
-    });
+  allYears.forEach(function(y, i) {
+   var earn = byYear[y] || 0;
+   if (!earn) {
+    svgParts.push('<text x="' + yearToX(i) + '" y="' + (svgH - PAD_B + 16) + '" text-anchor="middle" font-size="11" fill="' + SVG_TICK + '">' + y + '</text>');
+    return;
+   }
+   var barH = (earn / maxTick) * chartH;
+   var bx = yearToX(i) - barW/2;
+   var by = earnToY(earn);
+   svgParts.push('<rect x="' + bx + '" y="' + by + '" width="' + barW + '" height="' + barH + '" fill="#c8102e" rx="2"/>');
+   svgParts.push('<text x="' + yearToX(i) + '" y="' + (svgH - PAD_B + 16) + '" text-anchor="middle" font-size="11" fill="' + SVG_TICK + '">' + y + '</text>');
+  });
+
+  svgParts.push('<text x="' + (PAD_L + chartW/2) + '" y="' + (svgH) + '" text-anchor="middle" font-size="10" fill="' + SVG_LABEL + '" font-weight="600" letter-spacing="1">YEAR</text>');
+
+  svgParts.push('<line x1="' + PAD_L + '" y1="' + PAD_T + '" x2="' + PAD_L + '" y2="' + (PAD_T+chartH) + '" stroke="' + SVG_AXIS + '" stroke-width="1.5"/>');
+  svgParts.push('<line x1="' + PAD_L + '" y1="' + (PAD_T+chartH) + '" x2="' + (svgW-PAD_R) + '" y2="' + (PAD_T+chartH) + '" stroke="' + SVG_AXIS + '" stroke-width="1.5"/>');
+
+  svgParts.push('</svg>');
+  container.innerHTML = '<div class="stat-chart-wrap"><div class="stat-chart-title">Prize Earnings by Year</div>' + svgParts.join('') + '</div>';
   }
 
-  drawFooter(ctx, W, H,
-    new Date().toLocaleDateString("fr-FR", { day:"2-digit", month:"short", year:"numeric" }));
-  return canvas.toBuffer("image/png");
+  renderGantt('tpChartTimeline');
+  renderEarnings('tpChartEarnings');
+  renderGantt('tpChartTimelineAll');
+  renderEarnings('tpChartEarningsAll');
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  ROSTER CHANGE CARD — une image par joueur
-//  move = { player, from, to, type, date, country, region }
-// ═══════════════════════════════════════════════════════════════
-function renderRosterChange(move) {
-  const W = 620, H = 160, FOOT = 28;
-  const canvas = createCanvas(W, H);
-  const ctx    = canvas.getContext("2d");
+(function initDOM(){
+  const navDisc=document.getElementById("nav-discord-link");
+  if(navDisc) navDisc.insertAdjacentHTML("afterbegin",DISCORD_SVG+" ");
+  const mobileDisc=document.getElementById("mobile-discord-link");
+  if(mobileDisc) mobileDisc.insertAdjacentHTML("afterbegin",DISCORD_SVG+" ");
+  const discBadge=document.getElementById("disc-badge-icon");
+  if(discBadge) discBadge.insertAdjacentHTML("afterbegin",DISCORD_SVG+" ");
 
-  drawBg(ctx, W, H);
-  drawTopBar(ctx, W);
+  const footerHTML=`<div><div class="footer-brand">Global <span class="red">Stars</span> Network</div><div class="footer-sub">© 2026 GSN</div></div><div class="footer-links"><a href="#" onclick="showPage('home')">Home</a><a href="https://discord.gg/mH2mT66GXK" target="_blank">Discord</a></div>`;
+  document.querySelectorAll(".page-footer").forEach(f=>f.innerHTML=footerHTML);
 
-  // Couleur accent selon type
-  const accentCol = move.type === "join" ? C.green
-                  : move.type === "leave" ? C.red
-                  : C.teal;
+  const savedTheme = localStorage.getItem('gsn-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  const btn = document.getElementById('themeToggle');
+})();
 
-  // Barre latérale
-  const barG = ctx.createLinearGradient(0, 4, 0, H - FOOT);
-  barG.addColorStop(0, rgba(accentCol, 0.9));
-  barG.addColorStop(1, rgba(accentCol, 0));
-  ctx.fillStyle = barG;
-  ctx.fillRect(0, 4, 4, H - FOOT);
-
-  // ── Label ROSTER CHANGE + date ────────────────────────────────
-  ctx.font = "700 8px sans-serif";
-  ctx.fillStyle = rgba(accentCol, 0.8);
-  ctx.textBaseline = "top";
-  ctx.fillText("ROSTER CHANGE", 20, 12);
-
-  ctx.font = "500 8px sans-serif";
-  ctx.fillStyle = rgba(C.muted, 0.55);
-  ctx.textAlign = "right";
-  ctx.fillText(move.date || "", W - 20, 12);
-  ctx.textAlign = "left";
-
-  // ── Nom du joueur (grand, centré verticalement) ───────────────
-  const CY = 72; // centre vertical de la zone principale
-
-  // Drapeau pays
-  if (move.country) {
-    drawFlag(ctx, move.country, 36, CY - 8, 16);
-  }
-
-  ctx.font = "900 28px sans-serif";
-  ctx.fillStyle = C.white;
-  ctx.textBaseline = "middle";
-  ctx.fillText(move.player.toUpperCase(), move.country ? 62 : 20, CY - 8);
-
-  // ── FROM → TO ─────────────────────────────────────────────────
-  const FA_LABEL = "Free Agent";
-  const fromLabel = move.from || FA_LABEL;
-  const toLabel   = move.to   || FA_LABEL;
-  const fromIsFA  = fromLabel.toLowerCase() === "free agent" || fromLabel.toLowerCase() === "agent libre";
-  const toIsFA    = toLabel.toLowerCase()   === "free agent" || toLabel.toLowerCase()   === "agent libre";
-
-  const BOX_Y  = CY + 22;
-  const BOX_H  = 34;
-  const MID_X  = W / 2;
-  const BOX_W  = 190;
-  const LEFT_X = MID_X - BOX_W - 28;
-  const RIGHT_X= MID_X + 28;
-
-  // Boîte FROM
-  const fromCol = fromIsFA ? rgba(C.muted, 0.25) : rgba(C.red, 0.18);
-  roundRect(ctx, LEFT_X, BOX_Y, BOX_W, BOX_H, 5);
-  ctx.fillStyle = fromCol; ctx.fill();
-  ctx.strokeStyle = fromIsFA ? rgba(C.muted, 0.2) : rgba(C.red, 0.35);
-  ctx.lineWidth = 1; ctx.stroke();
-
-  ctx.font = fromIsFA ? "500 11px sans-serif" : "700 12px sans-serif";
-  ctx.fillStyle = fromIsFA ? rgba(C.muted, 0.6) : rgba(C.white, 0.85);
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  // Truncate if too long
-  let fromText = fromLabel;
-  while (ctx.measureText(fromText).width > BOX_W - 16 && fromText.length > 3) {
-    fromText = fromText.slice(0, -2) + "…";
-  }
-  ctx.fillText(fromText, LEFT_X + BOX_W / 2, BOX_Y + BOX_H / 2);
-
-  // Flèche centrale
-  const ARR_Y = BOX_Y + BOX_H / 2;
-  ctx.strokeStyle = rgba(accentCol, 0.8);
-  ctx.lineWidth = 2;
-  ctx.lineCap = "round";
-  ctx.beginPath();
-  ctx.moveTo(MID_X - 22, ARR_Y);
-  ctx.lineTo(MID_X + 10, ARR_Y);
-  ctx.stroke();
-  // Pointe de flèche
-  ctx.fillStyle = rgba(accentCol, 0.8);
-  ctx.beginPath();
-  ctx.moveTo(MID_X + 18, ARR_Y);
-  ctx.lineTo(MID_X + 8,  ARR_Y - 5);
-  ctx.lineTo(MID_X + 8,  ARR_Y + 5);
-  ctx.closePath();
-  ctx.fill();
-
-  // Boîte TO
-  const toCol = toIsFA ? rgba(C.muted, 0.25) : rgba(accentCol, 0.18);
-  roundRect(ctx, RIGHT_X, BOX_Y, BOX_W, BOX_H, 5);
-  ctx.fillStyle = toCol; ctx.fill();
-  ctx.strokeStyle = toIsFA ? rgba(C.muted, 0.2) : rgba(accentCol, 0.45);
-  ctx.lineWidth = 1; ctx.stroke();
-
-  ctx.font = toIsFA ? "500 11px sans-serif" : "700 12px sans-serif";
-  ctx.fillStyle = toIsFA ? rgba(C.muted, 0.6) : C.white;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  let toText = toLabel;
-  while (ctx.measureText(toText).width > BOX_W - 16 && toText.length > 3) {
-    toText = toText.slice(0, -2) + "…";
-  }
-  ctx.fillText(toText, RIGHT_X + BOX_W / 2, BOX_Y + BOX_H / 2);
-
-  // Badge région sur la boîte TO (si pas FA)
-  if (!toIsFA && move.region) {
-    drawRegionBadge(ctx, move.region, RIGHT_X + BOX_W - 2, BOX_Y - 8);
-  }
-
-  ctx.textAlign = "left";
-  ctx.textBaseline = "alphabetic";
-
-  drawFooter(ctx, W, H, "");
-  return canvas.toBuffer("image/png");
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('gsn-theme', next);
+  const btn = document.getElementById('themeToggle');
+  // icon via CSS
 }
 
-module.exports = { renderRankings, renderTeam, renderTeamStats, renderTournaments, renderFreeAgents, renderProfile, renderRosterChange };
+fetchAll();
+</script>
+</body>
+</html>
